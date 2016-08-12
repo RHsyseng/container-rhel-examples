@@ -1,0 +1,206 @@
+apiVersion: v1
+kind: Template
+metadata:
+  name: systemd-httpd
+objects:
+- apiVersion: v1
+  kind: ServiceAccount
+  metadata:
+    creationTimestamp: null
+    name: systemd
+- apiVersion: v1
+  kind: SecurityContextConstraints
+  allowHostDirVolumePlugin: true
+  allowHostIPC: false
+  allowHostNetwork: false
+  allowHostPID: false
+  allowHostPorts: false
+  allowPrivilegedContainer: false
+  allowedCapabilities: null
+  defaultAddCapabilities: null
+  fsGroup:
+    type: MustRunAs
+  users:
+  - system:serviceaccount:systemd:systemd
+  metadata:
+    annotations:
+      kubernetes.io/description: Similar to restricted - systemd-restricted denies access to all host features,
+        except hostPath, and requires pods to be run with a certain UID, and SELinux context that are allocated
+        to the namespace. This also allows for setuid and setgid capabilities.
+    creationTimestamp: null
+    name: systemd-restricted
+  priority: null
+  readOnlyRootFilesystem: false
+  requiredDropCapabilities:
+  - KILL
+  - MKNOD
+  - SYS_CHROOT
+  runAsUser:
+    type: MustRunAs
+    uid: 10001
+  seLinuxContext:
+    type: MustRunAs
+  supplementalGroups:
+    type: RunAsAny
+  volumes:
+  - configMap
+  - downwardAPI
+  - emptyDir
+  - persistentVolumeClaim
+  - secret
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    labels:
+      app: systemd-httpd
+    name: systemd-httpd
+  spec:
+    tags:
+    - name: "systemd-httpd"
+- apiVersion: "v1"
+  kind: "BuildConfig"
+  metadata:
+    name: "systemd-httpd" 
+  spec:
+    source:
+      git:
+        uri: https://github.com/RHsyseng/container-rhel-examples
+      contextDir: "starter-systemd"
+    strategy: 
+      type: "Docker"
+    output:
+      to:
+        kind: "ImageStreamTag"
+        name: "systemd-httpd:latest"
+    triggers:
+    - generic:
+        secret: b725254e6534fd70
+      type: Generic
+    - type: ConfigChange
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftWebConsole
+    creationTimestamp: null
+    generation: 6
+    labels:
+      app: systemd-httpd
+    name: systemd-httpd
+  spec:
+    replicas: 1
+    selector:
+      app: systemd-httpd
+      deploymentconfig: systemd-httpd
+    strategy:
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        annotations:
+          openshift.io/generated-by: OpenShiftWebConsole
+        creationTimestamp: null
+        labels:
+          app: systemd-httpd
+          deploymentconfig: systemd-httpd
+      spec:
+        containers:
+        - image: 172.30.93.229:5000/systemd/systemd-httpd@sha256:51a604c2e655a4a7a533fe687ae14bb164c7a141c9bcd745f5c7e1bf316b9fb7
+          imagePullPolicy: Always
+          name: systemd-httpd
+          ports:
+          - containerPort: 80
+            protocol: TCP
+          - containerPort: 443
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 5
+            periodSeconds: 20
+            successThreshold: 1
+            tcpSocket:
+              port: 443
+            timeoutSeconds: 1
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          volumeMounts:
+          - mountPath: /sys/fs/cgroup
+            name: cgroup
+          - mountPath: /run
+            name: run
+          - mountPath: /tmp
+            name: tmp
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        securityContext:
+          runAsUser: 10001
+        serviceAccount: systemd
+        serviceAccountName: systemd
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - hostPath:
+            path: /sys/fs/cgroup
+          name: cgroup
+        - emptyDir: {}
+          name: run
+        - emptyDir: {}
+          name: tmp
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - systemd-httpd
+        from:
+          kind: ImageStreamTag
+          name: systemd-httpd:latest
+          namespace: systemd
+      type: ImageChange
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftWebConsole
+    creationTimestamp: null
+    labels:
+      app: systemd-httpd
+    name: systemd-httpd
+  spec:
+    ports:
+    - name: 80-tcp
+      port: 80
+      protocol: TCP
+      targetPort: 80
+    - name: 443-tcp
+      port: 443
+      protocol: TCP
+      targetPort: 443
+    selector:
+      deploymentconfig: systemd-httpd
+    sessionAffinity: None
+    type: ClusterIP
+- apiVersion: v1
+  kind: Route
+  metadata:
+    annotations:
+      openshift.io/host.generated: "true"
+    creationTimestamp: null
+    labels:
+      app: systemd-httpd
+    name: systemd-httpd
+  spec:
+    port:
+      targetPort: 443-tcp
+    tls:
+      termination: passthrough
+    to:
+      kind: Service
+      name: systemd-httpd
+      weight: 100

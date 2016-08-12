@@ -1,0 +1,143 @@
+apiVersion: v1
+kind: Template
+metadata:
+  name: starter-httpd
+objects:
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    labels:
+      app: starter-httpd
+    name: starter-httpd
+  spec:
+    tags:
+    - name: "starter-httpd"
+- apiVersion: "v1"
+  kind: "BuildConfig"
+  metadata:
+    name: "starter-httpd"
+  spec:
+    source:
+      git:
+        uri: https://github.com/RHsyseng/container-rhel-examples
+      contextDir: "starter-httpd"
+    strategy: 
+      type: "Docker"
+    output:
+      to:
+        kind: "ImageStreamTag"
+        name: "starter-httpd:latest"
+    triggers:
+    - generic:
+        secret: b725254e6534fd70
+      type: Generic
+    - type: ConfigChange
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftWebConsole
+    creationTimestamp: null
+    generation: 7
+    labels:
+      app: starter-httpd
+    name: starter-httpd
+  spec:
+    replicas: 1
+    selector:
+      app: starter-httpd
+      deploymentconfig: starter-httpd
+    strategy:
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        annotations:
+          openshift.io/generated-by: OpenShiftWebConsole
+        creationTimestamp: null
+        labels:
+          app: starter-httpd
+          deploymentconfig: starter-httpd
+      spec:
+        containers:
+        - image: 172.30.93.229:5000/starter-httpd/starter-httpd@sha256:f5f80e5c582c0e5ed010a9057ce5c6458c31f4e28c652d0e1f9397cd543c2b31
+          imagePullPolicy: Always
+          name: starter-httpd
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          - containerPort: 8443
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 5
+            periodSeconds: 20
+            successThreshold: 1
+            tcpSocket:
+              port: 8443
+            timeoutSeconds: 1
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - starter-httpd
+        from:
+          kind: ImageStreamTag
+          name: starter-httpd:latest
+          namespace: starter-httpd
+      type: ImageChange
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftWebConsole
+    creationTimestamp: null
+    labels:
+      app: starter-httpd
+    name: starter-httpd
+  spec:
+    ports:
+    - name: 80-tcp
+      port: 80
+      protocol: TCP
+      targetPort: 8080
+    - name: 443-tcp
+      port: 443
+      protocol: TCP
+      targetPort: 8443
+    selector:
+      deploymentconfig: starter-httpd
+    sessionAffinity: None
+    type: ClusterIP
+- apiVersion: v1
+  kind: Route
+  metadata:
+    annotations:
+      openshift.io/host.generated: "true"
+    creationTimestamp: null
+    labels:
+      app: starter-httpd
+    name: starter-httpd
+  spec:
+    port:
+      targetPort: 443-tcp
+    tls:
+      termination: passthrough
+    to:
+      kind: Service
+      name: starter-httpd
+      weight: 100
