@@ -25,6 +25,11 @@ LABEL io.k8s.description="Starter App will do ....." \
       io.openshift.expose-services="8080:http,8443:https" \
       io.openshift.tags="Acme,starter,starterapp"
 
+
+### To cleanly shutdown the container use SIGRTMIN+3
+### https://www.freedesktop.org/wiki/Software/systemd/ContainerInterface/
+STOPSIGNAL SIGRTMIN+3
+
 ### Atomic Help File - Write in Markdown, it will be converted to man format at build time.
 ### https://github.com/projectatomic/container-best-practices/blob/master/creating/help.adoc
 COPY help.md /
