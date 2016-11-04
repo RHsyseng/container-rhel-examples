@@ -1,14 +1,14 @@
-% STARTER (1) Container Image Pages
+% starter-epel (1) Container Image Pages
 % Tommy Hughes
 % October 13, 2016
 
 # NAME
-starter \- starter container image
+starter-epel \- starter-epel container image
 
 # DESCRIPTION
-The starter image provides an example of how a RHEL-based image build could start.
+The starter-epel image provides an example of how a RHEL-based image build could start.
 
-The starter image is designed to be run by the atomic command with one of these options:
+The starter-epel image is designed to be run by the atomic command with one of these options:
 
 `run`
 
@@ -29,22 +29,22 @@ The container itself consists of:
 Files added to the container during docker build include: /help.1.
 
 # USAGE
-To use the starter container, you can run the atomic command with run, stop, or uninstall options:
+To use the starter-epel container, you can run the atomic command with run, stop, or uninstall options:
 
-To run the starter container:
+To run the starter-epel container:
 
-  atomic run acme/starter
+  atomic run acme/starter-epel
 
-To stop the starter container (after it is installed), run:
+To stop the starter-epel container (after it is installed), run:
 
-  atomic stop acme/starter
+  atomic stop acme/starter-epel
 
-To remove the starter container (not the image) from your system, run:
+To remove the starter-epel container (not the image) from your system, run:
 
-  atomic uninstall acme/starter
+  atomic uninstall acme/starter-epel
 
 # LABELS
-The starter container includes the following LABEL settings:
+The starter-epel container includes the following LABEL settings:
 
 That atomic command runs the docker command set in this label:
 
@@ -52,11 +52,11 @@ That atomic command runs the docker command set in this label:
 
   LABEL RUN='docker run -tdi --name ${NAME} ${IMAGE}'
 
-  The contents of the RUN label tells an `atomic run acme/starter` command to open ports 8080/8443 & set the name of the container.
+  The contents of the RUN label tells an `atomic run acme/starter-epel` command to open ports 8080/8443 & set the name of the container.
 
 `Name=`
 
-The registry location and name of the image. For example, Name="acme/starter".
+The registry location and name of the image. For example, Name="acme/starter-epel".
 
 `Version=`
 
@@ -66,7 +66,7 @@ The Red Hat Enterprise Linux version from which the container was built. For exa
 
 The specific release number of the container. For example, Release="12.1.a":
 
-When the atomic command runs the starter container, it reads the command line associated with the selected option
+When the atomic command runs the starter-epel container, it reads the command line associated with the selected option
 from a LABEL set within the Docker container itself. It then runs that command. The following sections detail
 each option and associated LABEL:
 

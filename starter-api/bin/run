@@ -1,0 +1,17 @@
+#!/bin/sh
+export MY_CONTAINER_ID=$(basename "$(cat /proc/1/cgroup)" | sed 's/.scope$//g' | tr -d "[:punct:]" | sed 's/^docker/docker:\/\//g')
+
+if [ -f /var/run/secrets/kubernetes.io/serviceaccount/token ]; then
+    KAPI=https://openshift.default.svc.cluster.local/api/v1
+    OAPI=https://openshift.default.svc.cluster.local/oapi/v1
+    TOKEN_HEADER="Authorization: Bearer $(cat /var/run/secrets/kubernetes.io/serviceaccount/token)"
+    CA_CERT=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+
+    curl -H "${TOKEN_HEADER}" --cacert ${CA_CERT} ${KAPI}/namespaces/${MY_POD_NAMESPACE}/pods/${MY_POD_NAME} -O
+    export MY_POD_UID=$(cat ${MY_POD_NAME} | jq -r '.metadata.uid')
+    rm -f ${MY_POD_NAME}
+fi
+
+echo MY_CONTAINER_ID=${MY_CONTAINER_ID}
+echo MY_POD_UID=${MY_POD_UID}
+exec tail -f /dev/null

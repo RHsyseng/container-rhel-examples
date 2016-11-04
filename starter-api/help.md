@@ -1,14 +1,14 @@
-% STARTER-HTTPD (1) Container Image Pages
+% starter-api (1) Container Image Pages
 % Tommy Hughes
 % October 13, 2016
 
 # NAME
-starter-httpd \- starter-httpd container image
+starter-api \- starter-api container image
 
 # DESCRIPTION
-The starter-httpd image provides an example of how a RHEL-based image build could start.
+The starter-api image provides an example of how a RHEL-based image build could start.
 
-The starter-httpd image is designed to be run by the atomic command with one of these options:
+The starter-api image is designed to be run by the atomic command with one of these options:
 
 `run`
 
@@ -24,43 +24,39 @@ Removes the installed container, not the image
 
 The container itself consists of:
     - RHEL7 base image
-    - Apache/2.4 w/ SSL
     - Atomic help file
 
 Files added to the container during docker build include: /help.1.
 
 # USAGE
-To use the starter-httpd container, you can run the atomic command with run, stop, or uninstall options:
+To use the starter-api container, you can run the atomic command with run, stop, or uninstall options:
 
-To run the starter-httpd container:
+To run the starter-api container:
 
-  atomic run acme/starter-httpd
+  atomic run acme/starter-api
 
-To stop the starter-httpd container (after it is installed), run:
+To stop the starter-api container (after it is installed), run:
 
-  atomic stop acme/starter-httpd
+  atomic stop acme/starter-api
 
-To remove the starter-httpd container (not the image) from your system, run:
+To remove the starter-api container (not the image) from your system, run:
 
-  atomic uninstall acme/starter-httpd
+  atomic uninstall acme/starter-api
 
 # LABELS
-The starter-httpd container includes the following LABEL settings:
+The starter-api container includes the following LABEL settings:
 
 That atomic command runs the docker command set in this label:
 
 `RUN=`
 
-  LABEL RUN='docker run -tdi --name ${NAME} \
-        -p 8080:8080 \
-        -p 8443:8443 \
-        $IMAGE' \
+  LABEL RUN='docker run -tdi --name ${NAME} ${IMAGE}'
 
-  The contents of the RUN label tells an `atomic run acme/starter-httpd` command to open ports 8080/8443 & set the name of the container.
+  The contents of the RUN label tells an `atomic run acme/starter-api` command to open ports 8080/8443 & set the name of the container.
 
 `Name=`
 
-The registry location and name of the image. For example, Name="acme/starter-httpd".
+The registry location and name of the image. For example, Name="acme/starter-api".
 
 `Version=`
 
@@ -70,7 +66,7 @@ The Red Hat Enterprise Linux version from which the container was built. For exa
 
 The specific release number of the container. For example, Release="12.1.a":
 
-When the atomic command runs the starter-httpd container, it reads the command line associated with the selected option
+When the atomic command runs the starter-api container, it reads the command line associated with the selected option
 from a LABEL set within the Docker container itself. It then runs that command. The following sections detail
 each option and associated LABEL:
 

@@ -25,8 +25,8 @@ objects:
   metadata:
     annotations:
       kubernetes.io/description: Similar to restricted - systemd-restricted denies access to all host features,
-        except hostPath, and requires pods to be run with a certain UID, and SELinux context that are allocated
-        to the namespace. This also allows for setuid and setgid capabilities.
+        except hostPath, and SELinux context that are allocated to the namespace. This scc allows for setuid 
+        and setgid capabilities.
     creationTimestamp: null
     name: systemd-restricted
   priority: null
@@ -36,8 +36,7 @@ objects:
   - MKNOD
   - SYS_CHROOT
   runAsUser:
-    type: MustRunAs
-    uid: 10001
+    type: MustRunAsRange
   seLinuxContext:
     type: MustRunAs
   supplementalGroups:
@@ -138,8 +137,7 @@ objects:
             name: tmp
         dnsPolicy: ClusterFirst
         restartPolicy: Always
-        securityContext:
-          runAsUser: 10001
+        securityContext: {}
         serviceAccount: systemd
         serviceAccountName: systemd
         terminationGracePeriodSeconds: 30

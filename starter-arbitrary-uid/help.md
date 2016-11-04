@@ -1,14 +1,14 @@
-% STARTER (1) Container Image Pages
+% starter-arbitrary-uid (1) Container Image Pages
 % Tommy Hughes
 % October 13, 2016
 
 # NAME
-starter \- starter container image
+starter-arbitrary-uid \- starter-arbitrary-uid container image
 
 # DESCRIPTION
-The starter image provides an example of how a RHEL-based image build could start.
+The starter-arbitrary-uid image provides an example of how a RHEL-based image build could start.
 
-The starter image is designed to be run by the atomic command with one of these options:
+The starter-arbitrary-uid image is designed to be run by the atomic command with one of these options:
 
 `run`
 
@@ -29,34 +29,36 @@ The container itself consists of:
 Files added to the container during docker build include: /help.1.
 
 # USAGE
-To use the starter container, you can run the atomic command with run, stop, or uninstall options:
+To use the starter-arbitrary-uid container, you can run the atomic command with run, stop, or uninstall options:
 
-To run the starter container:
+To run the starter-arbitrary-uid container:
 
-  atomic run acme/starter
+  atomic run acme/starter-arbitrary-uid
 
-To stop the starter container (after it is installed), run:
+To stop the starter-arbitrary-uid container (after it is installed), run:
 
-  atomic stop acme/starter
+  atomic stop acme/starter-arbitrary-uid
 
-To remove the starter container (not the image) from your system, run:
+To remove the starter-arbitrary-uid container (not the image) from your system, run:
 
-  atomic uninstall acme/starter
+  atomic uninstall acme/starter-arbitrary-uid
 
 # LABELS
-The starter container includes the following LABEL settings:
+The starter-arbitrary-uid container includes the following LABEL settings:
 
 That atomic command runs the docker command set in this label:
 
 `RUN=`
 
-  LABEL RUN='docker run -tdi --name ${NAME} ${IMAGE}'
+  LABEL RUN='docker run -tdi --name ${NAME} \
+            -u 123456 \
+            ${IMAGE}' \
 
-  The contents of the RUN label tells an `atomic run acme/starter` command to open ports 8080/8443 & set the name of the container.
+  The contents of the RUN label tells an `atomic run acme/starter-arbitrary-uid` command to open ports 8080/8443 & set the name of the container.
 
 `Name=`
 
-The registry location and name of the image. For example, Name="acme/starter".
+The registry location and name of the image. For example, Name="acme/starter-arbitrary-uid".
 
 `Version=`
 
@@ -66,7 +68,7 @@ The Red Hat Enterprise Linux version from which the container was built. For exa
 
 The specific release number of the container. For example, Release="12.1.a":
 
-When the atomic command runs the starter container, it reads the command line associated with the selected option
+When the atomic command runs the starter-arbitrary-uid container, it reads the command line associated with the selected option
 from a LABEL set within the Docker container itself. It then runs that command. The following sections detail
 each option and associated LABEL:
 

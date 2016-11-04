@@ -54,7 +54,6 @@ That atomic command runs the docker command set in this label:
 `RUN=`
 
   LABEL RUN='docker run -tdi --name ${NAME} \
-        --stop-signal=RTMIN+3 \
         -p 8080:80 \
         -p 8443:443 \
         ${IMAGE}' \

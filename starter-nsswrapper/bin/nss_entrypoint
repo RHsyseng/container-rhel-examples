@@ -1,0 +1,8 @@
+#!/bin/sh
+export USER_ID=$(id -u)
+export GROUP_ID=$(id -g)
+envsubst < ${APP_ROOT}/etc/passwd.template > ${APP_ROOT}/etc/passwd
+export LD_PRELOAD=/usr/lib64/libnss_wrapper.so
+export NSS_WRAPPER_PASSWD=${APP_ROOT}/etc/passwd
+export NSS_WRAPPER_GROUP=/etc/group
+exec "$@"

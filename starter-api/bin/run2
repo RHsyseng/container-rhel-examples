@@ -1,0 +1,4 @@
+#!/bin/sh
+export $(xargs -n 1 -0 < /proc/1/environ | grep -E "MY_CONTAINER_ID|MY_POD_UID")
+echo MY_CONTAINER_ID=${MY_CONTAINER_ID}
+echo MY_POD_UID=${MY_POD_UID}

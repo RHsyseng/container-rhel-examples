@@ -1,4 +1,4 @@
-## Starter-systemd RHEL-based Image w/ best practices 
+## Starter-arbitrary-uid RHEL-based Image w/ best practices 
 This image aims to include Red Hat's most critical [container best practices](http://docs.projectatomic.io/container-best-practices/).
 
 ### Building an image on RHEL
@@ -23,13 +23,5 @@ http://developers.redhat.com/products/cdk/overview/
 
 Once your host is setup you can begin your Dockerfile with this example. This will ensure you're using the supported/secure base image instead of one you might find on docker's public hub, and many other benefits discussed in the best practices link above.
 ```shell
-$ docker build --pull -t acme/starter-systemd -t acme/starter-systemd:v3.2 .
-$ atomic run acme/starter-systemd
-# OR (on RHEL docker)
-# $ docker run -tdi --name starter-systemd -p 8080:80 -p 8443:443 acme/starter-systemd
-# OR
-# $ docker run -tdi --name starter-systemd -p 8080:80 -p 8443:443 -v /sys/fs/cgroup:/sys/fs/cgroup:ro --tmpfs /run --tmpfs /tmp acme/starter-systemd
-$ docker logs starter-systemd 
-$ docker exec starter-systemd systemctl status
-$ docker exec starter-systemd journalctl
+$ docker build --pull -t acme/starter-arbitrary-uid -t acme/starter-arbitrary-uid:v3.2 .
 ```

@@ -1,0 +1,5 @@
+#!/bin/sh
+USER_ID=$(id -u)
+GROUP_ID=$(id -g)
+sed "s@${USER_NAME}:x:\${USER_ID}:\${GROUP_ID}@${USER_NAME}:x:${USER_ID}:${GROUP_ID}@g" ${APP_ROOT}/etc/passwd.template > /etc/passwd
+exec "$@"

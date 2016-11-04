@@ -7,14 +7,12 @@ ENV LANG en_US.utf8
 ### Set the JAVA_HOME variable to make it clear where Java is located
 ENV JAVA_HOME /usr/lib/jvm/java
 
-RUN set -x \
-    && yum clean all \
-    && yum-config-manager --disable \* \
-    && yum-config-manager --enable rhel-7-server-rpms \
-    && yum-config-manager --enable rhel-7-server-thirdparty-oracle-java-rpms \    
-    && yum -y update-minimal --security --sec-severity=Important --sec-severity=Critical --setopt=tsflags=nodocs \
-    && yum -y install --setopt=tsflags=nodocs java-1.8.0-oracle-devel \
-    && yum clean all
+RUN yum clean all && \
+    yum-config-manager --disable \* &> /dev/null && \
+    yum-config-manager --enable rhel-7-server-rpms,rhel-7-server-thirdparty-oracle-java-rpms &> /dev/null && \
+    yum -y update-minimal --security --sec-severity=Important --sec-severity=Critical --setopt=tsflags=nodocs && \
+    yum -y install --setopt=tsflags=nodocs java-1.8.0-oracle-devel && \
+    yum clean all
 
 ENV APP_ROOT=/opt/app-root \
     USER_NAME=default \
