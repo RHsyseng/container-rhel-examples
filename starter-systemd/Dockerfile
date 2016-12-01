@@ -48,7 +48,7 @@ RUN chmod -R ug+x ${APP_ROOT}/bin ${APP_ROOT}/etc /tmp/user_setup /tmp/systemd_s
     /tmp/user_setup
 
 ####### Add app-specific needs below. #######
-### these are systemd requirements
+### systemd requirements
 ### To cleanly shutdown systemd, use SIGRTMIN+3
 STOPSIGNAL SIGRTMIN+3
 ENV container=docker
