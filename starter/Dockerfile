@@ -45,9 +45,6 @@ RUN chmod -R ug+x ${APP_ROOT}/bin /tmp/user_setup && \
     /tmp/user_setup
 
 ####### Add app-specific needs below. #######
-### if COPYing or using files that require permission mods, do so before leaving root USER
-# RUN chown -R ${USER_UID}:0 /run/httpd /etc/httpd /var/log/httpd && chmod -R g+rw /run/httpd /etc/httpd /var/log
-
 ### Containers should NOT run as root as a best practice
 USER ${USER_UID}
 WORKDIR ${APP_ROOT}
