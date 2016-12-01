@@ -1,4 +1,3 @@
 ```shell
-$ make all
-$ make clean
+$ make
 ```
