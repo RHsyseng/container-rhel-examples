@@ -5,10 +5,6 @@ BUILD_NAME_003 = starter-arbitrary-uid
 BUILD_NAME_004 = starter-epel
 BUILD_NAME_005 = starter-nsswrapper
 BUILD_NAME_006 = starter-systemd
-BUILD_NAME_007 = oracle-jdk
-BUILD_NAME_008 = oracle-jre
-BUILD_NAME_009 = sdk
-BUILD_NAME_010 = jre
 REGISTRY_SERVER = 172.30.93.229:5000
 USERNAME = ""
 PASSWORD = ""
@@ -17,7 +13,7 @@ REGISTRY = 10.0.1.1
 
 all: build
 
-build: $(BUILD_NAME_001).o $(BUILD_NAME_002).o $(BUILD_NAME_003).o $(BUILD_NAME_004).o $(BUILD_NAME_005).o $(BUILD_NAME_006).o $(BUILD_NAME_007).o $(BUILD_NAME_008).o $(BUILD_NAME_009).o $(BUILD_NAME_010).o
+build: $(BUILD_NAME_001).o $(BUILD_NAME_002).o $(BUILD_NAME_003).o $(BUILD_NAME_004).o $(BUILD_NAME_005).o $(BUILD_NAME_006).o
 
 $(BUILD_NAME_001).o: $(BUILD_NAME_001)/*
 	docker build --pull -t $(CONTEXT)/$(BUILD_NAME_001):$(VERSION) -t $(CONTEXT)/$(BUILD_NAME_001) $(BUILD_NAME_001)/	
@@ -42,22 +38,6 @@ $(BUILD_NAME_005).o: $(BUILD_NAME_005)/*
 $(BUILD_NAME_006).o: $(BUILD_NAME_006)/*
 	docker build --pull -t $(CONTEXT)/$(BUILD_NAME_006):$(VERSION) -t $(CONTEXT)/$(BUILD_NAME_006) $(BUILD_NAME_006)/
 	@if docker images $(CONTEXT)/$(BUILD_NAME_006):$(VERSION); then touch $(BUILD_NAME_006).o; fi
-
-$(BUILD_NAME_007).o: $(BUILD_NAME_007)/*
-	docker build --pull -t $(CONTEXT)/$(BUILD_NAME_007):$(VERSION) -t $(CONTEXT)/$(BUILD_NAME_007) $(BUILD_NAME_007)/
-	@if docker images $(CONTEXT)/$(BUILD_NAME_007):$(VERSION); then touch $(BUILD_NAME_007).o; fi
-
-$(BUILD_NAME_008).o: $(BUILD_NAME_008)/*
-	docker build --pull -t $(CONTEXT)/$(BUILD_NAME_008):$(VERSION) -t $(CONTEXT)/$(BUILD_NAME_008) $(BUILD_NAME_008)/
-	@if docker images $(CONTEXT)/$(BUILD_NAME_008):$(VERSION); then touch $(BUILD_NAME_008).o; fi
-
-$(BUILD_NAME_009).o: $(BUILD_NAME_009)/*
-	docker build --pull -t $(CONTEXT)/$(BUILD_NAME_009):$(VERSION) -t $(CONTEXT)/$(BUILD_NAME_009) $(BUILD_NAME_009)/
-	@if docker images $(CONTEXT)/$(BUILD_NAME_009):$(VERSION); then touch $(BUILD_NAME_009).o; fi
-
-$(BUILD_NAME_010).o: $(BUILD_NAME_010)/*
-	docker build --pull -t $(CONTEXT)/$(BUILD_NAME_010):$(VERSION) -t $(CONTEXT)/$(BUILD_NAME_010) $(BUILD_NAME_010)/
-	@if docker images $(CONTEXT)/$(BUILD_NAME_010):$(VERSION); then touch $(BUILD_NAME_010).o; fi
 
 #test:
 #	env NAME=$(NAME) VERSION=$(VERSION) ./test.sh
