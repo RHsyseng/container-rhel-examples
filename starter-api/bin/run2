@@ -1,5 +1,8 @@
 #!/bin/sh
 export $(xargs -n 1 -0 < /proc/1/environ | grep -E "MY_CONTAINER_ID|MY_POD_UID|MY_SERVICE_ACCOUNT")
 echo MY_CONTAINER_ID=${MY_CONTAINER_ID}
-echo MY_SERVICE_ACCOUNT=${MY_SERVICE_ACCOUNT}
-echo MY_POD_UID=${MY_POD_UID}
+
+if [ -f /var/run/secrets/kubernetes.io/serviceaccount/token ]; then
+    echo MY_SERVICE_ACCOUNT=${MY_SERVICE_ACCOUNT}
+    echo MY_POD_UID=${MY_POD_UID}
+fi
