@@ -10,10 +10,11 @@ if [ -f /var/run/secrets/kubernetes.io/serviceaccount/token ]; then
     curl -H "${TOKEN_HEADER}" --cacert ${CA_CERT} ${KAPI}/namespaces/${MY_POD_NAMESPACE}/pods/${MY_POD_NAME} -O
     curl -H "${TOKEN_HEADER}" --cacert ${CA_CERT} ${OAPI}/users/~ -o users.json
     export MY_POD_UID=$(cat ${MY_POD_NAME} | jq -r '.metadata.uid')
-    cat users.json
+    export MY_SERVICE_ACCOUNT=$(cat users.json | jq -r '.metadata.name')
     rm -f ${MY_POD_NAME} users.json
 fi
 
 echo MY_CONTAINER_ID=${MY_CONTAINER_ID}
+echo MY_SERVICE_ACCOUNT=${MY_SERVICE_ACCOUNT}
 echo MY_POD_UID=${MY_POD_UID}
 exec tail -f /dev/null
