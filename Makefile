@@ -1,49 +1,55 @@
 CONTEXT = acme
-BUILD_NAME_001 = starter
-BUILD_NAME_002 = starter-api
-BUILD_NAME_003 = starter-arbitrary-uid
-BUILD_NAME_004 = starter-epel
-BUILD_NAME_005 = starter-nsswrapper
-BUILD_NAME_006 = starter-systemd
-REGISTRY_SERVER = 172.30.93.229:5000
 USERNAME = ""
 PASSWORD = ""
 VERSION = v3.2
 REGISTRY = 10.0.1.1
+REGISTRY_SERVER = 172.30.93.229:5000
+OUTPUT_DIR = o
 
 all: build
+build: ${OUTPUT_DIR}/starter.o  ${OUTPUT_DIR}/starter-arbitrary-uid.o  ${OUTPUT_DIR}/starter-systemd.o  ${OUTPUT_DIR}/starter-epel.o  ${OUTPUT_DIR}/starter-api.o  ${OUTPUT_DIR}/starter-nsswrapper.o
+starter: ${OUTPUT_DIR}/starter.o
+starter-arbitrary-uid: ${OUTPUT_DIR}/starter-arbitrary-uid.o
+starter-systemd: ${OUTPUT_DIR}/starter-systemd.o
+starter-epel: ${OUTPUT_DIR}/starter-epel.o
+starter-api: ${OUTPUT_DIR}/starter-api.o
+starter-nsswrapper: ${OUTPUT_DIR}/starter-nsswrapper.o
 
-build: $(BUILD_NAME_001).o $(BUILD_NAME_002).o $(BUILD_NAME_003).o $(BUILD_NAME_004).o $(BUILD_NAME_005).o $(BUILD_NAME_006).o
+${OUTPUT_DIR}/starter.o: starter/*
+	@mkdir -p ${OUTPUT_DIR}
+	docker build --pull -t $(CONTEXT)/starter:$(VERSION) -t $(CONTEXT)/starter starter/	
+	@if docker images $(CONTEXT)/starter:$(VERSION); then touch ${OUTPUT_DIR}/starter.o; fi
 
-$(BUILD_NAME_001).o: $(BUILD_NAME_001)/*
-	docker build --pull -t $(CONTEXT)/$(BUILD_NAME_001):$(VERSION) -t $(CONTEXT)/$(BUILD_NAME_001) $(BUILD_NAME_001)/	
-	@if docker images $(CONTEXT)/$(BUILD_NAME_001):$(VERSION); then touch $(BUILD_NAME_001).o; fi
+${OUTPUT_DIR}/starter-arbitrary-uid.o: starter-arbitrary-uid/*
+	@mkdir -p ${OUTPUT_DIR}
+	docker build --pull -t $(CONTEXT)/starter-arbitrary-uid:$(VERSION) -t $(CONTEXT)/starter-arbitrary-uid starter-arbitrary-uid/	
+	@if docker images $(CONTEXT)/starter-arbitrary-uid:$(VERSION); then touch ${OUTPUT_DIR}/starter-arbitrary-uid.o; fi
 
-$(BUILD_NAME_002).o: $(BUILD_NAME_002)/*
-	docker build --pull -t $(CONTEXT)/$(BUILD_NAME_002):$(VERSION) -t $(CONTEXT)/$(BUILD_NAME_002) $(BUILD_NAME_002)/
-	@if docker images $(CONTEXT)/$(BUILD_NAME_002):$(VERSION); then touch $(BUILD_NAME_002).o; fi
+${OUTPUT_DIR}/starter-systemd.o: starter-systemd/*
+	@mkdir -p ${OUTPUT_DIR}
+	docker build --pull -t $(CONTEXT)/starter-systemd:$(VERSION) -t $(CONTEXT)/starter-systemd starter-systemd/	
+	@if docker images $(CONTEXT)/starter-systemd:$(VERSION); then touch ${OUTPUT_DIR}/starter-systemd.o; fi
 
-$(BUILD_NAME_003).o: $(BUILD_NAME_003)/*
-	docker build --pull -t $(CONTEXT)/$(BUILD_NAME_003):$(VERSION) -t $(CONTEXT)/$(BUILD_NAME_003) $(BUILD_NAME_003)/
-	@if docker images $(CONTEXT)/$(BUILD_NAME_003):$(VERSION); then touch $(BUILD_NAME_003).o; fi
+${OUTPUT_DIR}/starter-epel.o: starter-epel/*
+	@mkdir -p ${OUTPUT_DIR}
+	docker build --pull -t $(CONTEXT)/starter-epel:$(VERSION) -t $(CONTEXT)/starter-epel starter-epel/	
+	@if docker images $(CONTEXT)/starter-epel:$(VERSION); then touch ${OUTPUT_DIR}/starter-epel.o; fi
 
-$(BUILD_NAME_004).o: $(BUILD_NAME_004)/*
-	docker build --pull -t $(CONTEXT)/$(BUILD_NAME_004):$(VERSION) -t $(CONTEXT)/$(BUILD_NAME_004) $(BUILD_NAME_004)/
-	@if docker images $(CONTEXT)/$(BUILD_NAME_004):$(VERSION); then touch $(BUILD_NAME_004).o; fi
+${OUTPUT_DIR}/starter-api.o: starter-api/*
+	@mkdir -p ${OUTPUT_DIR}
+	docker build --pull -t $(CONTEXT)/starter-api:$(VERSION) -t $(CONTEXT)/starter-api starter-api/	
+	@if docker images $(CONTEXT)/starter-api:$(VERSION); then touch ${OUTPUT_DIR}/starter-api.o; fi
 
-$(BUILD_NAME_005).o: $(BUILD_NAME_005)/*
-	docker build --pull -t $(CONTEXT)/$(BUILD_NAME_005):$(VERSION) -t $(CONTEXT)/$(BUILD_NAME_005) $(BUILD_NAME_005)/
-	@if docker images $(CONTEXT)/$(BUILD_NAME_005):$(VERSION); then touch $(BUILD_NAME_005).o; fi
-
-$(BUILD_NAME_006).o: $(BUILD_NAME_006)/*
-	docker build --pull -t $(CONTEXT)/$(BUILD_NAME_006):$(VERSION) -t $(CONTEXT)/$(BUILD_NAME_006) $(BUILD_NAME_006)/
-	@if docker images $(CONTEXT)/$(BUILD_NAME_006):$(VERSION); then touch $(BUILD_NAME_006).o; fi
+${OUTPUT_DIR}/starter-nsswrapper.o: starter-nsswrapper/*
+	@mkdir -p ${OUTPUT_DIR}
+	docker build --pull -t $(CONTEXT)/starter-nsswrapper:$(VERSION) -t $(CONTEXT)/starter-nsswrapper starter-nsswrapper/	
+	@if docker images $(CONTEXT)/starter-nsswrapper:$(VERSION); then touch ${OUTPUT_DIR}/starter-nsswrapper.o; fi
 
 #test:
 #	env NAME=$(NAME) VERSION=$(VERSION) ./test.sh
 
 clean:
-	rm ./*.o
+	rm -r ${OUTPUT_DIR}
 
 #tag_production:
 #	docker tag $(BUILD_NAME_001):latest $(BUILD_NAME_001):production
