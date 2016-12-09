@@ -7,7 +7,7 @@ REGISTRY_SERVER = 172.30.93.229:5000
 OUTPUT_DIR = o
 
 all: build
-build: ${OUTPUT_DIR}/starter.o  ${OUTPUT_DIR}/starter-arbitrary-uid.o  ${OUTPUT_DIR}/starter-systemd.o  ${OUTPUT_DIR}/starter-epel.o  ${OUTPUT_DIR}/starter-api.o  ${OUTPUT_DIR}/starter-nsswrapper.o
+build: starter  starter-arbitrary-uid  starter-systemd  starter-epel  starter-api  starter-nsswrapper
 starter: ${OUTPUT_DIR}/starter.o
 starter-arbitrary-uid: ${OUTPUT_DIR}/starter-arbitrary-uid.o
 starter-systemd: ${OUTPUT_DIR}/starter-systemd.o
@@ -49,7 +49,7 @@ ${OUTPUT_DIR}/starter-nsswrapper.o: starter-nsswrapper/*
 #	env NAME=$(NAME) VERSION=$(VERSION) ./test.sh
 
 clean:
-	rm -r ${OUTPUT_DIR}
+	rm -r ${OUTPUT_DIR}/
 
 #tag_production:
 #	docker tag $(BUILD_NAME_001):latest $(BUILD_NAME_001):production
