@@ -8,8 +8,10 @@ if [ -f /var/run/secrets/kubernetes.io/serviceaccount/token ]; then
     CA_CERT=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt
 
     curl -H "${TOKEN_HEADER}" --cacert ${CA_CERT} ${KAPI}/namespaces/${MY_POD_NAMESPACE}/pods/${MY_POD_NAME} -O
+    curl -H "${TOKEN_HEADER}" --cacert ${CA_CERT} ${OAPI}/users/~ -o users.json
     export MY_POD_UID=$(cat ${MY_POD_NAME} | jq -r '.metadata.uid')
-    rm -f ${MY_POD_NAME}
+    cat users.json
+    rm -f ${MY_POD_NAME} users.json
 fi
 
 echo MY_CONTAINER_ID=${MY_CONTAINER_ID}
