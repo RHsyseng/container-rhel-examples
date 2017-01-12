@@ -15,7 +15,6 @@ LABEL name="acme/starter-systemd" \
       run='docker run -tdi --name ${NAME} \
       -u 123456 \
       -p 8080:80 \
-      -p 8443:443 \
       ${IMAGE}' \
       io.k8s.description="Starter app will do ....." \
       io.k8s.display-name="Starter app" \
@@ -31,7 +30,7 @@ RUN yum clean all && yum-config-manager --disable \* &> /dev/null && \
     yum-config-manager --enable rhel-7-server-rpms,rhel-7-server-optional-rpms &> /dev/null && \
     yum -y update-minimal --security --sec-severity=Important --sec-severity=Critical --setopt=tsflags=nodocs && \
 ### Add your package needs to this installation line
-    yum -y install --setopt=tsflags=nodocs golang-github-cpuguy83-go-md2man cronie httpd mod_ssl && \
+    yum -y install --setopt=tsflags=nodocs golang-github-cpuguy83-go-md2man cronie httpd && \
 ### help file markdown to man conversion
     go-md2man -in /tmp/help.md -out /help.1 && yum -y remove golang-github-cpuguy83-go-md2man && \
     yum clean all
@@ -57,7 +56,6 @@ RUN systemctl set-default multi-user.target && \
 ### Containers should NOT run as root as a good practice
 USER ${USER_UID}
 WORKDIR ${APP_ROOT}
-EXPOSE 80 443
 ### arbitrary uid recognition at runtime - for OpenShift deployments
 RUN sed "s@${USER_NAME}:x:${USER_UID}:0@${USER_NAME}:x:\${USER_ID}:\${GROUP_ID}@g" /etc/passwd > ${APP_ROOT}/etc/passwd.template
 CMD [ "/sbin/init" ]
