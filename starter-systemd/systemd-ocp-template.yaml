@@ -116,15 +116,13 @@ objects:
           ports:
           - containerPort: 80
             protocol: TCP
-          - containerPort: 443
-            protocol: TCP
           readinessProbe:
             failureThreshold: 3
             initialDelaySeconds: 5
             periodSeconds: 20
             successThreshold: 1
             tcpSocket:
-              port: 443
+              port: 80
             timeoutSeconds: 1
           resources: {}
           terminationMessagePath: /dev/termination-log
@@ -176,10 +174,6 @@ objects:
       port: 80
       protocol: TCP
       targetPort: 80
-    - name: 443-tcp
-      port: 443
-      protocol: TCP
-      targetPort: 443
     selector:
       deploymentconfig: systemd-httpd
     sessionAffinity: None
@@ -195,9 +189,7 @@ objects:
     name: systemd-httpd
   spec:
     port:
-      targetPort: 443-tcp
-    tls:
-      termination: passthrough
+      targetPort: 80-tcp
     to:
       kind: Service
       name: systemd-httpd
