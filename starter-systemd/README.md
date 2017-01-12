@@ -26,10 +26,22 @@ Once your host is setup you can begin your Dockerfile with this example. This wi
 $ docker build --pull -t acme/starter-systemd -t acme/starter-systemd:v3.2 .
 $ atomic run acme/starter-systemd
 # OR (on RHEL docker)
-# $ docker run -tdi --name starter-systemd -p 8080:80 -p 8443:443 acme/starter-systemd
+# $ docker run -tdi --name starter-systemd -p 8080:80 acme/starter-systemd
 # OR
-# $ docker run -tdi --name starter-systemd -p 8080:80 -p 8443:443 -v /sys/fs/cgroup:/sys/fs/cgroup:ro --tmpfs /run --tmpfs /tmp acme/starter-systemd
+# $ docker run -tdi --name starter-systemd -p 8080:80 -v /sys/fs/cgroup:/sys/fs/cgroup:ro --tmpfs /run --tmpfs /tmp acme/starter-systemd
 $ docker logs starter-systemd 
 $ docker exec starter-systemd systemctl status
 $ docker exec starter-systemd journalctl
+```
+####To use this image as a base image, instead of a template, for systemd applications
+Before building starter-systemd as your base image, BE SURE YOU DELETE THE LABEL LINES in the Dockerfile, or they might impact your “appX” container at runtime (e.g. atomic). You’d also want a separate Dockerfile for appX that looks something like this:
+```Dockerfile
+FROM acme/starter-systemd
+USER root
+RUN yum-config-manager --enable rhel-7-server-rpms &> /dev/null && \
+    yum -y remove cronie httpd && \
+    yum -y install --setopt=tsflags=nodocs <appX> && \
+    yum clean all && \
+    systemctl enable <appX>
+USER 10001 
 ```

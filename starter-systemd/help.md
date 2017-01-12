@@ -26,7 +26,7 @@ The container itself consists of:
     - RHEL7 base image
     - systemd
     - crond
-    - Apache/2.4 w/ SSL
+    - Apache/2.x
     - Atomic help file
 
 Files added to the container during docker build include: /help.1.
@@ -54,11 +54,11 @@ That atomic command runs the docker command set in this label:
 `RUN=`
 
   LABEL RUN='docker run -tdi --name ${NAME} \
+        -u 123456 \
         -p 8080:80 \
-        -p 8443:443 \
         ${IMAGE}' \
 
-  The contents of the RUN label tells an `atomic run acme/starter-systemd` command to open ports 8080/8443 & set the name of the container.
+  The contents of the RUN label tells an `atomic run acme/starter-systemd` command to demonstrate arbitrary uid (-u) capabilities, open hostPort 8080 to containerPort 80, and set the name of the container.
 
 `Name=`
 
