@@ -33,3 +33,15 @@ $ docker logs starter-systemd
 $ docker exec starter-systemd systemctl status
 $ docker exec starter-systemd journalctl
 ```
+####To use this image as a base image, instead of a template, for systemd applications
+Before building starter-systemd as your base image, BE SURE YOU DELETE THE LABEL LINES in the Dockerfile, or they might impact your “appX” image build. You’d also want a separate Dockerfile for appX that looks something like this:
+```Dockerfile
+FROM acme/starter-systemd
+USER root
+RUN yum-config-manager --enable rhel-7-server-rpms &> /dev/null && \
+    yum -y remove cronie httpd && \
+    yum -y install --setopt=tsflags=nodocs <appX> && \
+    yum clean all && \
+    systemctl enable <appX>
+USER 10001 
+```
