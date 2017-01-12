@@ -58,7 +58,7 @@ That atomic command runs the docker command set in this label:
         -p 8080:80 \
         ${IMAGE}' \
 
-  The contents of the RUN label tells an `atomic run acme/starter-systemd` command to open port 8080 & set the name of the container.
+  The contents of the RUN label tells an `atomic run acme/starter-systemd` command to demonstrate arbitrary uid (-u) capabilities, open hostPort 8080 to containerPort 80, and set the name of the container.
 
 `Name=`
 
