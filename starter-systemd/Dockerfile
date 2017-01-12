@@ -18,7 +18,7 @@ LABEL name="acme/starter-systemd" \
       ${IMAGE}' \
       io.k8s.description="Starter app will do ....." \
       io.k8s.display-name="Starter app" \
-      io.openshift.expose-services="8080:http,8443:https" \
+      io.openshift.expose-services="8080:http" \
       io.openshift.tags="acme,starter-systemd,starter,systemd"
 
 ### Atomic Help File - Write in Markdown, it will be converted to man format at build time.
