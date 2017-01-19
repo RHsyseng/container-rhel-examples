@@ -43,5 +43,5 @@ RUN yum-config-manager --enable rhel-7-server-rpms &> /dev/null && \
     yum -y install --setopt=tsflags=nodocs <appX> && \
     yum clean all && \
     systemctl enable <appX>
-USER 10001 
+USER ${USER_UID}
 ```

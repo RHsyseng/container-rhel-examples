@@ -133,6 +133,8 @@ objects:
             name: run
           - mountPath: /tmp
             name: tmp
+          - mountPath: /var/log/httpd
+            name: log
         dnsPolicy: ClusterFirst
         restartPolicy: Always
         securityContext: {}
@@ -147,6 +149,8 @@ objects:
           name: run
         - emptyDir: {}
           name: tmp
+        - emptyDir: {}
+          name: log
     test: false
     triggers:
     - type: ConfigChange
