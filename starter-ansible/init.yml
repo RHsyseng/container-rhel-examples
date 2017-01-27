@@ -1,0 +1,132 @@
+---
+
+- name: Container Image Build 
+  hosts: localhost
+  gather_facts: False
+  tasks:
+# ----------------------------
+# Install Packages
+# ----------------------------
+# For this example we are updating the image for important and critical security
+# severity issues only.  The command will prompt to use the yum action but
+# currently it does not support update-minimal or the security severity options.
+#
+# We are adding gcc make and python-devel for an example of using packages to 
+# perform an action - installing python-iptables using pip.  Then removing 
+# those packages we no longer need in the image.
+# ----------------------------
+
+    - name: Update Minimal
+      command: > 
+          yum -y update-minimal 
+          --security 
+          --sec-severity=Important 
+          --sec-severity=Critical 
+          --setopt=tsflags=nodocs 
+          --disablerepo "*" 
+          --enablerepo rhel-7-server-rpms,rhel7-server-optional-rpms
+
+    - name: Install EPEL 
+      yum:
+        name:  https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+        state: present
+        disablerepo: "*"
+
+    - name: Install Packages
+      yum:
+        name: "{{ item }}"
+        state: present
+        disablerepo: "*"
+        enablerepo: "rhel-7-server-rpms,rhel-7-server-optional-rpms,epel,rhel-7-server-extras-rpms,rhel-7-server-aus-rpms" 
+      with_items:
+        - gcc
+        - make
+        - python-devel
+        - python2-pip
+        - wget
+        - gettext
+        - golang-github-cpuguy83-go-md2man
+
+    - name: Install python-iptables
+      pip:
+        name: python-iptables
+        state: present
+
+    - name: Create man page
+      command: go-md2man -in /tmp/help.md -out /help.1
+      register: manpage
+
+    - name: Remove help.md file
+      file:
+        dest: /tmp/help.md
+        state: absent
+      when: "{{ manpage | success }}"
+
+# ----------------------------
+# Find and remove
+# ----------------------------
+# Below is an example how to find files and remove if they are no longer needed
+# ----------------------------
+
+    - name: find files in tmp
+      find:
+        paths: /tmp
+        patterns: "*"
+        file_type: file 
+      register: tmpfile
+
+    - name: remove ns files and directories in tmp
+      file:
+        path: "{{ item }}"
+        state: absent
+      with_items: "{{ tmpfile.files | map(attribute='path') | list }}"
+ 
+# ----------------------------
+# Create User
+# ----------------------------
+# Generic user that will be used when running
+# this container 
+# ----------------------------
+
+    - name: Create User
+      user:
+        name: "{{ username }}"
+        uid: "{{ uid }}"
+        group: root
+        shell: /sbin/nologin
+        createhome: False
+        home: "{{ app_root }}"
+        system: True
+
+    - name: Create Directories
+      file:
+        dest: "{{ item.dest }}"
+        state: directory
+        recurse: True
+        owner: "{{ username }}"
+        group: root
+        mode: "{{ item.mode }}"
+      with_items:
+        - { dest: "{{ app_root }}", mode: "g+rw" }
+        - { dest: "{{ app_root }}/bin", mode: "ug+x" }
+        - { dest: "{{ app_root }}/src", mode: "g+rw" }
+
+# ----------------------------
+# Remove Packages 
+# ----------------------------
+# Once we are completed with the installation of software
+# remove all packages that are no longer needed to save space.
+# ----------------------------
+
+    - name: Remove packages
+      yum:
+        pkg: "{{ item }}"
+        state: absent
+      with_items:
+        - golang-github-cpuguy83-go-md2man
+        - gcc
+        - make
+        - python-devel
+        - python2-pip
+        - wget
+        - gettext
