@@ -4,35 +4,6 @@ metadata:
   name: starter-arbitrary-uid
 objects:
 - apiVersion: v1
-  kind: ImageStream
-  metadata:
-    labels:
-      app: starter-arbitrary-uid
-    name: starter-arbitrary-uid
-  spec:
-    tags:
-    - name: "starter-arbitrary-uid"
-- apiVersion: "v1"
-  kind: "BuildConfig"
-  metadata:
-    name: "starter-arbitrary-uid"
-  spec:
-    source:
-      git:
-        uri: https://github.com/RHsyseng/container-rhel-examples
-      contextDir: "starter-arbitrary-uid"
-    strategy: 
-      type: "Docker"
-    output:
-      to:
-        kind: "ImageStreamTag"
-        name: "starter-arbitrary-uid:latest"
-    triggers:
-    - generic:
-        secret: b725254e6534fd70
-      type: Generic
-    - type: ConfigChange
-- apiVersion: v1
   kind: DeploymentConfig
   metadata:
     annotations:
@@ -66,10 +37,7 @@ objects:
           deploymentconfig: starter-arbitrary-uid
       spec:
         containers:
-        - env:
-          - name: HOME
-            value: /opt/app-root
-          image: 172.30.93.229:5000/starter-arbitrary-uid/starter-arbitrary-uid@sha256:f5f80e5c582c0e5ed010a9057ce5c6458c31f4e28c652d0e1f9397cd543c2b31
+        - image: starter-arbitrary-uid
           imagePullPolicy: Always
           name: starter-arbitrary-uid
           resources: {}
@@ -88,5 +56,33 @@ objects:
         from:
           kind: ImageStreamTag
           name: starter-arbitrary-uid:latest
-          namespace: starter-arbitrary-uid
       type: ImageChange
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    labels:
+      app: starter-arbitrary-uid
+    name: starter-arbitrary-uid
+  spec:
+    tags:
+    - name: "starter-arbitrary-uid"
+- apiVersion: "v1"
+  kind: "BuildConfig"
+  metadata:
+    name: "starter-arbitrary-uid"
+  spec:
+    source:
+      git:
+        uri: https://github.com/RHsyseng/container-rhel-examples
+      contextDir: "starter-arbitrary-uid"
+    strategy: 
+      type: "Docker"
+    output:
+      to:
+        kind: "ImageStreamTag"
+        name: "starter-arbitrary-uid:latest"
+    triggers:
+    - generic:
+        secret: b725254e6534fd70
+      type: Generic
+    - type: ConfigChange
