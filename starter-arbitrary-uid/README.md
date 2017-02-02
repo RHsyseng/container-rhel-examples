@@ -28,3 +28,10 @@ $ docker build --pull -t acme/starter-arbitrary-uid:centos7 -f Dockerfile.centos
 $ docker run -u 123456 acme/starter-arbitrary-uid:centos7 id
 $ docker run -u 123456 acme/starter-arbitrary-uid id
 ```
+OpenShift deployment
+```shell
+# CENTOS version
+$ oc new-app https://raw.githubusercontent.com/RHsyseng/container-rhel-examples/master/starter-arbitrary-uid/uid-ocp-template-centos7.yaml
+# OR RHEL version
+$ oc new-app https://raw.githubusercontent.com/RHsyseng/container-rhel-examples/master/starter-arbitrary-uid/uid-ocp-template.yaml
+```
