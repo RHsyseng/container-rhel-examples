@@ -1,5 +1,6 @@
 #!/bin/sh
 USER_ID=$(id -u)
-GROUP_ID=$(id -g)
-sed "s@${USER_NAME}:x:\${USER_ID}:\${GROUP_ID}@${USER_NAME}:x:${USER_ID}:${GROUP_ID}@g" ${APP_ROOT}/etc/passwd.template > /etc/passwd
+if [ ${USER_UID} != ${USER_ID} ]; then
+sed "s@${USER_NAME}:x:\${USER_ID}:@${USER_NAME}:x:${USER_ID}:@g" ${APP_ROOT}/etc/passwd.template > /etc/passwd
+fi
 exec /usr/lib/systemd/systemd-starter
