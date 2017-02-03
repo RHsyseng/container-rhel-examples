@@ -67,10 +67,12 @@ objects:
       contextDir: "starter-systemd"
     strategy: 
       type: "Docker"
+      dockerStrategy:
+        dockerfilePath: Dockerfile.centos7
     output:
       to:
         kind: "ImageStreamTag"
-        name: "systemd-httpd:latest"
+        name: "systemd-httpd:centos7"
     triggers:
     - generic:
         secret: b725254e6534fd70
@@ -110,7 +112,7 @@ objects:
           deploymentconfig: systemd-httpd
       spec:
         containers:
-        - image: systemd-httpd
+        - image: systemd-httpd:centos7
           imagePullPolicy: Always
           name: systemd-httpd
           ports:
@@ -160,7 +162,7 @@ objects:
         - systemd-httpd
         from:
           kind: ImageStreamTag
-          name: systemd-httpd:latest
+          name: systemd-httpd:centos7
       type: ImageChange
 - apiVersion: v1
   kind: Service
