@@ -7,8 +7,9 @@ REGISTRY_SERVER = 172.30.93.229:5000
 OUTPUT_DIR = o
 
 all: build
-build: starter  starter-ansible  starter-arbitrary-uid  starter-systemd  starter-epel  starter-api  starter-nsswrapper
+build: starter starter-rhel-atomic  starter-ansible  starter-arbitrary-uid  starter-systemd  starter-epel  starter-api  starter-nsswrapper
 starter: ${OUTPUT_DIR}/starter.o
+starter-rhel-atomic: ${OUTPUT_DIR}/starter-rhel-atomic.o
 starter-ansible: ${OUTPUT_DIR}/starter-ansible.o
 starter-arbitrary-uid: ${OUTPUT_DIR}/starter-arbitrary-uid.o
 starter-systemd: ${OUTPUT_DIR}/starter-systemd.o
@@ -20,6 +21,11 @@ ${OUTPUT_DIR}/starter.o: starter/*
 	@mkdir -p ${OUTPUT_DIR}
 	docker build --pull -t $(CONTEXT)/starter:$(VERSION) -t $(CONTEXT)/starter starter/	
 	@if docker images $(CONTEXT)/starter:$(VERSION); then touch ${OUTPUT_DIR}/starter.o; fi
+
+${OUTPUT_DIR}/starter-rhel-atomic.o: starter-rhel-atomic/*
+	@mkdir -p ${OUTPUT_DIR}
+	docker build --pull -t $(CONTEXT)/starter-rhel-atomic:$(VERSION) -t $(CONTEXT)/starter-rhel-atomic starter-rhel-atomic/	
+	@if docker images $(CONTEXT)/starter-rhel-atomic:$(VERSION); then touch ${OUTPUT_DIR}/starter-rhel-atomic.o; fi
 
 ${OUTPUT_DIR}/starter-ansible.o: starter-ansible/*
 	@mkdir -p ${OUTPUT_DIR}
