@@ -1,0 +1,4 @@
+---
+# defaults for starter-apb-openshift
+
+playbook_debug: no
