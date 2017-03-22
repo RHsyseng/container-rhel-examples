@@ -1,0 +1,6 @@
+- hosts: localhost
+  gather_facts: false
+  connection: local
+  tasks:
+  - name: Delete starter-apb project
+    command: oc delete project starter-apb

@@ -1,0 +1,7 @@
+- name: Deploy starter-apb to  openshift
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  roles:
+  - role: starter-apb-openshift
+    playbook_debug: false

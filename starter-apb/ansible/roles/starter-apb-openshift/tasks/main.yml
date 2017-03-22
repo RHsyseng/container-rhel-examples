@@ -1,0 +1,20 @@
+
+- oso_deployment:
+    project_name: starter-apb
+    labels:
+      app: starter-apb
+      service: starter-apb
+    deployment_name: starter-apb
+    containers:
+    - securityContext: {}
+      name: starter-apb
+      image: docker-registry-default.router.default.svc.cluster.local/starter-apb/starter-apb-starter-apb:20170322190316
+      args:
+      - tail
+      - -f
+      - /dev/null
+    replace: true
+  register: output
+
+- debug: var=output
+  when: playbook_debug
