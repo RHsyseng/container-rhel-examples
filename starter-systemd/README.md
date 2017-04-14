@@ -45,3 +45,17 @@ RUN yum-config-manager --enable rhel-7-server-rpms &> /dev/null && \
     systemctl enable <appX>
 USER ${USER_UID}
 ```
+
+### Systemd service unit file considerations
+
+If you plan to use systemd unit files that actually call a shell as a ExecStart, the invoked shell environment needs to be relaxed in order to prevent your EUID from being reset to RUID by bash/sh.
+This applies to the calling and execution shell on script, the "-p" flag is used to accomplish this in the example unit below :  
+
+```shell
+...
+[Service]
+ExecStart=/bin/sh -p -c "/bin/myservice.sh"
+Type=forking
+Restart=on-failure
+...
+```
