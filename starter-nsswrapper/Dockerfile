@@ -26,7 +26,7 @@ COPY help.md user_setup /tmp/
 
 RUN yum clean all && yum-config-manager --disable \* &> /dev/null && \
 ### Add necessary Red Hat repos here
-    yum-config-manager --enable rhel-7-server-rpms,rhel-7-server-optional-rpms,rhel-7-server-ose-3.4-rpms &> /dev/null && \
+    yum-config-manager --enable rhel-7-server-rpms,rhel-7-server-optional-rpms,rhel-7-server-ose-3.5-rpms &> /dev/null && \
     yum -y update-minimal --security --sec-severity=Important --sec-severity=Critical --setopt=tsflags=nodocs && \
 ### Add your package needs to this installation line
     yum -y install --setopt=tsflags=nodocs golang-github-cpuguy83-go-md2man nss_wrapper gettext && \
