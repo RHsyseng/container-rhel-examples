@@ -60,7 +60,7 @@ COPY bin/ ${APP_ROOT}/bin/
 
 RUN yum clean all && \
     yum -y install --disablerepo "*" \
-                   --enablerepo rhel-7-server-rpms,rhel-7-server-optional-rpms,rhel-7-server-ose-3.4-rpms \
+                   --enablerepo rhel-7-server-rpms,rhel-7-server-optional-rpms,rhel-7-server-ose-3.5-rpms \
                    --setopt=tsflags=nodocs ansible && \
     ansible-playbook /tmp/init.yml -c local -i localhost, \
                    --extra-vars "application_install=${APPLICATION_INSTALL} application_version=${APPLICATION_VERSION} app_root=${APP_ROOT} username=${USER_NAME} uid=${USER_UID}" && \
