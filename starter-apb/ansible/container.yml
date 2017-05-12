@@ -1,12 +1,12 @@
 version: "2"
 settings:
-  conductor_base: registry.access.redhat.com/rhel
+  conductor_base: registry.access.redhat.com/rhel7
 services:
   # Add your containers here, specifying the base image you want to build from
   # For example:
   #
    starterapb:
-     from: registry.access.redhat.com/rhel
+     from: registry.access.redhat.com/rhel7
      roles:
      - starter-apb
      labels:
