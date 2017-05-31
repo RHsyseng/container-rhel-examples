@@ -42,7 +42,7 @@ RUN chmod -R ug+x ${APP_ROOT}/bin ${APP_ROOT}/etc /tmp/user_setup /tmp/systemd_s
 ### systemd requirements - to cleanly shutdown systemd, use SIGRTMIN+3
 STOPSIGNAL SIGRTMIN+3
 ENV container=oci \
-    MASK_JOBS="sys-fs-fuse-connections.mount getty.target systemd-initctl.socket systemd-logind.service"
+    MASK_JOBS="sys-fs-fuse-connections.mount getty.target systemd-initctl.socket"
 RUN systemctl mask ${MASK_JOBS} && \
     for i in ${MASK_JOBS}; do find /usr/lib/systemd/ -iname $i | grep ".wants" | xargs rm -f; done && \
     rm -f /etc/fstab && \

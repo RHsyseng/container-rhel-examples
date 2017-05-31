@@ -47,7 +47,7 @@ RUN chmod -R ug+x ${APP_ROOT}/bin ${APP_ROOT}/etc /tmp/user_setup /tmp/systemd_s
 
 ####### Add app-specific needs below. #######
 ### systemd requirements
-ENV MASK_JOBS="sys-fs-fuse-connections.mount getty.target systemd-initctl.socket systemd-logind.service"
+ENV MASK_JOBS="sys-fs-fuse-connections.mount getty.target systemd-initctl.socket"
 RUN systemctl mask ${MASK_JOBS} && \
     for i in ${MASK_JOBS}; do find /usr/lib/systemd/ -iname $i | grep ".wants" | xargs rm -f; done && \
     systemctl enable httpd crond && \
