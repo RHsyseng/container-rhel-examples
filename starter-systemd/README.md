@@ -66,7 +66,8 @@ $ oc adm policy add-scc-to-user anyuid -z default
 $ oc create -f systemd-ocp-template-root.yaml
 
 # deploy rhel7 image
-$ oc new-app --template=systemd-httpd -p NAMESPACE=$(oc project -q)
+$ oc new-app --template=systemd-httpd
+
 # OR deploy centos7 image
-# oc new-app --template=systemd-httpd -p NAMESPACE=$(oc project -q) -p DOCKERFILE=Dockerfile.root.centos7
+# oc new-app --template=systemd-httpd -p DOCKERFILE=Dockerfile.root.centos7
 ```
