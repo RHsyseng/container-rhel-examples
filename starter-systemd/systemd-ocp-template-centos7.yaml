@@ -76,8 +76,6 @@ objects:
         dnsPolicy: ClusterFirst
         restartPolicy: Always
         securityContext: {}
-        serviceAccount: anyuid
-        serviceAccountName: anyuid
         terminationGracePeriodSeconds: 30
     triggers:
     - type: ConfigChange
