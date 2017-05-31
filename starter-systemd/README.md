@@ -35,13 +35,13 @@ $ docker exec starter-systemd journalctl
 ```
 ### Running in OpenShift
 ```shell
-$ oc new-project systemd
+$ oc new-project <project>
 
 $ oc create -f systemd-ocp-template.yaml
 # oc adm policy add-scc-to-user anyuid -z default
 
 # deploy rhel7 image
-$ oc new-app --template=systemd-httpd
+$ oc new-app --template=systemd-httpd -p NAMESPACE=$(oc project -q)
 # OR deploy centos7 image
-# oc new-app --template=systemd-httpd -p DOCKERFILE=Dockerfile.centos7
+# oc new-app --template=systemd-httpd -p NAMESPACE=$(oc project -q) -p DOCKERFILE=Dockerfile.centos7
 ```
