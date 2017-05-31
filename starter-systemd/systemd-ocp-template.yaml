@@ -50,6 +50,7 @@ objects:
         updatePeriodSeconds: 1
       type: Rolling
     template:
+      metadata:
         labels:
           app: systemd-httpd
           deploymentconfig: systemd-httpd
@@ -71,30 +72,12 @@ objects:
             timeoutSeconds: 1
           resources: {}
           terminationMessagePath: /dev/termination-log
-          volumeMounts:
-          - mountPath: /sys/fs/cgroup
-            name: cgroup
-          - mountPath: /run
-            name: run
-          - mountPath: /tmp
-            name: tmp
-          - mountPath: /var/log/httpd
-            name: log
         dnsPolicy: ClusterFirst
         restartPolicy: Always
         securityContext: {}
+        serviceAccount: anyuid
+        serviceAccountName: anyuid
         terminationGracePeriodSeconds: 30
-        volumes:
-        - hostPath:
-            path: /sys/fs/cgroup
-          name: cgroup
-        - emptyDir: {}
-          name: run
-        - emptyDir: {}
-          name: tmp
-        - emptyDir: {}
-          name: log
-    test: false
     triggers:
     - type: ConfigChange
     - imageChangeParams:
