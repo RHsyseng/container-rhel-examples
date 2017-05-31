@@ -22,7 +22,7 @@ LABEL name="acme/starter-systemd" \
 
 RUN yum -y update-minimal --security --sec-severity=Important --sec-severity=Critical --setopt=tsflags=nodocs && \
 ### Add your package needs to this installation line
-    yum -y install cronie httpd && \
+    yum -y --setopt=tsflags=nodocs install cronie httpd && \
     yum clean all
 
 ####### Add app-specific needs below. #######

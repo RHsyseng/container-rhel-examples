@@ -19,10 +19,12 @@ objects:
   spec:
     source:
       git:
-        uri: https://github.com/RHsyseng/container-rhel-examples
+        uri: ${GIT_URI}
       contextDir: "starter-systemd"
     strategy: 
       type: "Docker"
+      dockerStrategy:
+        dockerfilePath: ${DOCKERFILE}
     output:
       to:
         kind: "ImageStreamTag"
@@ -123,3 +125,14 @@ objects:
     to:
       kind: Service
       name: systemd-httpd
+parameters:
+- description: Github repo url
+  displayName: Github repo url
+  name: GIT_URI
+  required: true
+  value: https://github.com/RHsyseng/container-rhel-examples
+- description: Dockerfile
+  displayName: Dockerfile
+  name: DOCKERFILE
+  required: true
+  value: Dockerfile
