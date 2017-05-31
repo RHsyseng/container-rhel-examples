@@ -71,11 +71,17 @@ objects:
               port: 80
             timeoutSeconds: 1
           resources: {}
+          volumeMounts:
+          - mountPath: /var/log/httpd
+            name: log
           terminationMessagePath: /dev/termination-log
         dnsPolicy: ClusterFirst
         restartPolicy: Always
         securityContext: {}
         terminationGracePeriodSeconds: 30
+        volumes:
+        - emptyDir: {}
+          name: log
     triggers:
     - type: ConfigChange
     - imageChangeParams:

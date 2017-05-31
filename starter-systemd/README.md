@@ -33,29 +33,16 @@ $ docker logs starter-systemd
 $ docker exec starter-systemd systemctl status
 $ docker exec starter-systemd journalctl
 ```
-####To use this image as a base image, instead of a template, for systemd applications
-Before building starter-systemd as your base image, BE SURE YOU DELETE THE LABEL LINES in the Dockerfile, or they might impact your “appX” container at runtime (e.g. atomic). You’d also want a separate Dockerfile for appX that looks something like this:
-```Dockerfile
-FROM acme/starter-systemd
-USER root
-RUN yum-config-manager --enable rhel-7-server-rpms &> /dev/null && \
-    yum -y remove cronie httpd && \
-    yum -y install --setopt=tsflags=nodocs <appX> && \
-    yum clean all && \
-    systemctl enable <appX>
-USER ${USER_UID}
-```
-
-### Systemd service unit file considerations
-
-If you plan to use systemd unit files that actually call a shell as a ExecStart, the invoked shell environment needs to be relaxed in order to prevent your EUID from being reset to RUID by bash/sh.
-This applies to the calling and execution shell on script, the "-p" flag is used to accomplish this in the example unit below :  
-
+### Running in OpenShift
 ```shell
-...
-[Service]
-ExecStart=/bin/sh -p -c "/bin/myservice.sh"
-Type=forking
-Restart=on-failure
-...
+$ oc new-project systemd
+$ oc adm policy add-scc-to-user anyuid -z default
+
+# deploy rhel7 image
+$ oc create -f systemd-ocp-template.yaml
+
+# OR deploy centos7 image
+# oc create -f systemd-ocp-template-centos7.yaml
+
+$ oc new-app --template=systemd-httpd
 ```
