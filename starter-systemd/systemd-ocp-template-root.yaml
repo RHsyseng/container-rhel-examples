@@ -4,39 +4,6 @@ metadata:
   name: systemd-httpd
 objects:
 - apiVersion: v1
-  kind: ServiceAccount
-  metadata:
-    creationTimestamp: null
-    name: systemd
-- apiVersion: v1
-  kind: SecurityContextConstraints
-  fsGroup:
-    type: MustRunAs
-  users:
-  - system:serviceaccount:${NAMESPACE}:systemd
-  metadata:
-    annotations:
-      kubernetes.io/description: systemd restricted denies access to all host features and requires
-        pods to be run with a UID, and SELinux context that are allocated to the namespace.
-    name: systemd-restricted
-  priority: 1
-  requiredDropCapabilities:
-  - KILL
-  - MKNOD
-  - SYS_CHROOT
-  runAsUser:
-    type: MustRunAsRange
-  seLinuxContext:
-    type: MustRunAs
-  supplementalGroups:
-    type: RunAsAny
-  volumes:
-  - configMap
-  - downwardAPI
-  - emptyDir
-  - persistentVolumeClaim
-  - secret
-- apiVersion: v1
   kind: ImageStream
   metadata:
     labels:
@@ -114,8 +81,6 @@ objects:
         dnsPolicy: ClusterFirst
         restartPolicy: Always
         securityContext: {}
-        serviceAccount: systemd
-        serviceAccountName: systemd
         terminationGracePeriodSeconds: 30
         volumes:
         - emptyDir: {}
@@ -176,9 +141,4 @@ parameters:
   displayName: Dockerfile
   name: DOCKERFILE
   required: true
-  value: Dockerfile
-- description: The OpenShift Namespace where the systemd sa resides.
-  displayName: OpenShift Namespace
-  name: NAMESPACE
-  required: true
-  value: systemd
+  value: Dockerfile.root

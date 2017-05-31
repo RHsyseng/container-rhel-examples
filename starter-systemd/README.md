@@ -33,7 +33,7 @@ $ docker logs starter-systemd
 $ docker exec starter-systemd systemctl status
 $ docker exec starter-systemd journalctl
 ```
-### Running in OpenShift
+### Running in OpenShift w/ a restrictive scc & arbitrary uid
 ```shell
 $ oc new-project <project>
 
@@ -44,4 +44,29 @@ $ oc create -f systemd-ocp-template.yaml
 $ oc new-app --template=systemd-httpd -p NAMESPACE=$(oc project -q)
 # OR deploy centos7 image
 # oc new-app --template=systemd-httpd -p NAMESPACE=$(oc project -q) -p DOCKERFILE=Dockerfile.centos7
+```
+### Systemd service unit file considerations w/ a restrictive scc deployment (above)
+
+If you plan to use systemd unit files that actually call a shell as a ExecStart, the invoked shell environment needs to be relaxed in order to prevent your EUID from being reset to RUID by bash/sh.
+This applies to the calling and execution shell on script, the "-p" flag is used to accomplish this in the example unit below :  
+
+```shell
+...
+[Service]
+ExecStart=/bin/sh -p -c "/bin/myservice.sh"
+Type=forking
+Restart=on-failure
+...
+```
+### Running in OpenShift w/ the anyuid scc & root uid
+```shell
+$ oc new-project <project>
+
+$ oc adm policy add-scc-to-user anyuid -z default
+$ oc create -f systemd-ocp-template-root.yaml
+
+# deploy rhel7 image
+$ oc new-app --template=systemd-httpd -p NAMESPACE=$(oc project -q)
+# OR deploy centos7 image
+# oc new-app --template=systemd-httpd -p NAMESPACE=$(oc project -q) -p DOCKERFILE=Dockerfile.root.centos7
 ```
