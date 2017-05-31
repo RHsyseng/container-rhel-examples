@@ -1,9 +1,8 @@
 #!/bin/sh
 set -x
-MASK_JOBS="sys-fs-fuse-connections.mount systemd-initctl.socket getty.target"
+MASK_JOBS="systemd-initctl.socket"
 systemctl mask ${MASK_JOBS}
 for i in ${MASK_JOBS};do find /usr/lib/systemd/ -iname $i | grep ".wants" | xargs rm -f; done
-rm -f /etc/fstab
 cp -p /usr/lib/systemd/systemd /usr/lib/systemd/systemd-starter
 chmod 6550 /usr/lib/systemd/systemd-starter
 ln -fs ${APP_ROOT}/bin/systemd_entrypoint /sbin/init

@@ -1,5 +1,5 @@
 ### docker build --pull -t acme/starter-systemd -t acme/starter-systemd:v3.2 .
-FROM registry.access.redhat.com/rhel7
+FROM registry.access.redhat.com/rhel7-init
 MAINTAINER Red Hat Systems Engineering <refarch-feedback@redhat.com>
 
 ### Atomic/OpenShift Labels - https://github.com/projectatomic/ContainerApplicationGenericLabels
@@ -46,11 +46,7 @@ RUN chmod -R ug+x ${APP_ROOT}/bin ${APP_ROOT}/etc /tmp/user_setup /tmp/systemd_s
     /tmp/user_setup
 
 ####### Add app-specific needs below. #######
-### systemd requirements - to cleanly shutdown systemd, use SIGRTMIN+3
-STOPSIGNAL SIGRTMIN+3
-ENV container=docker
-RUN systemctl set-default multi-user.target && \
-    systemctl enable httpd crond && \
+RUN systemctl enable httpd crond && \
     /tmp/systemd_setup
 
 ### Containers should NOT run as root as a good practice
