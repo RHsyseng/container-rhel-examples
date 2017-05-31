@@ -4,6 +4,39 @@ metadata:
   name: systemd-httpd
 objects:
 - apiVersion: v1
+  kind: ServiceAccount
+  metadata:
+    creationTimestamp: null
+    name: systemd
+- apiVersion: v1
+  kind: SecurityContextConstraints
+  fsGroup:
+    type: MustRunAs
+  users:
+  - system:serviceaccount:${NAMESPACE}:systemd
+  metadata:
+    annotations:
+      kubernetes.io/description: systemd restricted denies access to all host features and requires
+        pods to be run with a UID, and SELinux context that are allocated to the namespace.
+    name: systemd-restricted
+  priority: 1
+  requiredDropCapabilities:
+  - KILL
+  - MKNOD
+  - SYS_CHROOT
+  runAsUser:
+    type: MustRunAsRange
+  seLinuxContext:
+    type: MustRunAs
+  supplementalGroups:
+    type: RunAsAny
+  volumes:
+  - configMap
+  - downwardAPI
+  - emptyDir
+  - persistentVolumeClaim
+  - secret
+- apiVersion: v1
   kind: ImageStream
   metadata:
     labels:
@@ -19,10 +52,13 @@ objects:
   spec:
     source:
       git:
-        uri: https://github.com/RHsyseng/container-rhel-examples
+        uri: ${GIT_URI}
+        ref: ${GIT_REF}
       contextDir: "starter-systemd"
     strategy: 
       type: "Docker"
+      dockerStrategy:
+        dockerfilePath: ${DOCKERFILE}
     output:
       to:
         kind: "ImageStreamTag"
@@ -78,6 +114,8 @@ objects:
         dnsPolicy: ClusterFirst
         restartPolicy: Always
         securityContext: {}
+        serviceAccount: systemd
+        serviceAccountName: systemd
         terminationGracePeriodSeconds: 30
         volumes:
         - emptyDir: {}
@@ -123,3 +161,24 @@ objects:
     to:
       kind: Service
       name: systemd-httpd
+parameters:
+- description: Github repo url
+  displayName: Github repo url
+  name: GIT_URI
+  required: true
+  value: https://github.com/RHsyseng/container-rhel-examples
+- description: Github branch
+  displayName: Github branch
+  name: GIT_REF
+  required: true
+  value: master
+- description: Dockerfile
+  displayName: Dockerfile
+  name: DOCKERFILE
+  required: true
+  value: Dockerfile
+- description: The OpenShift Namespace where the systemd sa resides.
+  displayName: OpenShift Namespace
+  name: NAMESPACE
+  required: true
+  value: systemd

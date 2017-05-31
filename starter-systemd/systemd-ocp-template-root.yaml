@@ -19,16 +19,17 @@ objects:
   spec:
     source:
       git:
-        uri: https://github.com/RHsyseng/container-rhel-examples
+        uri: ${GIT_URI}
+        ref: ${GIT_REF}
       contextDir: "starter-systemd"
     strategy: 
       type: "Docker"
       dockerStrategy:
-        dockerfilePath: Dockerfile.centos7
+        dockerfilePath: ${DOCKERFILE}
     output:
       to:
         kind: "ImageStreamTag"
-        name: "systemd-httpd:centos7"
+        name: "systemd-httpd:latest"
     triggers:
     - type: ConfigChange
 - apiVersion: v1
@@ -58,7 +59,7 @@ objects:
           deploymentconfig: systemd-httpd
       spec:
         containers:
-        - image: systemd-httpd:centos7
+        - image: systemd-httpd
           imagePullPolicy: Always
           name: systemd-httpd
           ports:
@@ -76,6 +77,7 @@ objects:
           volumeMounts:
           - mountPath: /var/log/httpd
             name: log
+          terminationMessagePath: /dev/termination-log
         dnsPolicy: ClusterFirst
         restartPolicy: Always
         securityContext: {}
@@ -91,11 +93,14 @@ objects:
         - systemd-httpd
         from:
           kind: ImageStreamTag
-          name: systemd-httpd:centos7
+          name: systemd-httpd:latest
       type: ImageChange
 - apiVersion: v1
   kind: Service
   metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftWebConsole
+    creationTimestamp: null
     labels:
       app: systemd-httpd
     name: systemd-httpd
@@ -121,3 +126,19 @@ objects:
     to:
       kind: Service
       name: systemd-httpd
+parameters:
+- description: Github repo url
+  displayName: Github repo url
+  name: GIT_URI
+  required: true
+  value: https://github.com/RHsyseng/container-rhel-examples
+- description: Github branch
+  displayName: Github branch
+  name: GIT_REF
+  required: true
+  value: master
+- description: Dockerfile
+  displayName: Dockerfile
+  name: DOCKERFILE
+  required: true
+  value: Dockerfile.root
