@@ -1,5 +1,5 @@
 ### docker build --pull -t acme/starter-systemd:centos7 -f Dockerfile.centos7 .
-FROM centos:7
+FROM docker.io/centos:7
 MAINTAINER Red Hat Systems Engineering <refarch-feedback@redhat.com>
 
 ### Atomic/OpenShift Labels - https://github.com/projectatomic/ContainerApplicationGenericLabels
@@ -13,7 +13,6 @@ LABEL name="acme/starter-systemd" \
       summary="Acme Corp's Starter app" \
       description="Starter app will do ....." \
       run='docker run -tdi --name ${NAME} \
-      -u 123456 \
       -p 8080:80 \
       ${IMAGE}' \
       io.k8s.description="Starter app will do ....." \
@@ -21,36 +20,20 @@ LABEL name="acme/starter-systemd" \
       io.openshift.expose-services="8080:http" \
       io.openshift.tags="acme,starter-systemd,starter,systemd"
 
-### Atomic Help File - Write in Markdown, it will be converted to man format at build time.
-### https://github.com/projectatomic/container-best-practices/blob/master/creating/help.adoc
-COPY user_setup systemd_setup /tmp/
-
 RUN yum -y update-minimal --security --sec-severity=Important --sec-severity=Critical --setopt=tsflags=nodocs && \
 ### Add your package needs to this installation line
     yum -y install cronie httpd && \
     yum clean all
 
-### Setup user for build execution and application runtime
-ENV APP_ROOT=/opt/app-root \
-    USER_NAME=default \
-    USER_UID=10001
-ENV APP_HOME=${APP_ROOT}/src  PATH=$PATH:${APP_ROOT}/bin
-RUN mkdir -p ${APP_HOME} ${APP_ROOT}/etc
-COPY bin/ ${APP_ROOT}/bin/
-RUN chmod -R ug+x ${APP_ROOT}/bin ${APP_ROOT}/etc /tmp/user_setup /tmp/systemd_setup && \
-    /tmp/user_setup
+COPY systemd_setup /tmp/
 
 ####### Add app-specific needs below. #######
 ### systemd requirements - to cleanly shutdown systemd, use SIGRTMIN+3
 STOPSIGNAL SIGRTMIN+3
-ENV container=docker
+ENV container=oci
 RUN systemctl set-default multi-user.target && \
     systemctl enable httpd crond && \
+    chmod u+x /tmp/systemd_setup && \
     /tmp/systemd_setup
 
-### Containers should NOT run as root as a good practice
-USER ${USER_UID}
-WORKDIR ${APP_ROOT}
-### arbitrary uid recognition at runtime - for OpenShift deployments
-RUN sed "s@${USER_NAME}:x:${USER_UID}:@${USER_NAME}:x:\${USER_ID}:@g" /etc/passwd > ${APP_ROOT}/etc/passwd.template
 CMD [ "/sbin/init" ]

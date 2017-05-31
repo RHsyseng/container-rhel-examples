@@ -4,50 +4,6 @@ metadata:
   name: systemd-httpd
 objects:
 - apiVersion: v1
-  kind: ServiceAccount
-  metadata:
-    creationTimestamp: null
-    name: systemd
-- apiVersion: v1
-  kind: SecurityContextConstraints
-  allowHostDirVolumePlugin: true
-  allowHostIPC: false
-  allowHostNetwork: false
-  allowHostPID: false
-  allowHostPorts: false
-  allowPrivilegedContainer: false
-  allowedCapabilities: null
-  defaultAddCapabilities: null
-  fsGroup:
-    type: MustRunAs
-  users:
-  - system:serviceaccount:systemd:systemd
-  metadata:
-    annotations:
-      kubernetes.io/description: Similar to restricted - systemd-restricted denies access to all host features,
-        except hostPath, and SELinux context that are allocated to the namespace. This scc allows for setuid 
-        and setgid capabilities.
-    creationTimestamp: null
-    name: systemd-restricted
-  priority: null
-  readOnlyRootFilesystem: false
-  requiredDropCapabilities:
-  - KILL
-  - MKNOD
-  - SYS_CHROOT
-  runAsUser:
-    type: MustRunAsRange
-  seLinuxContext:
-    type: MustRunAs
-  supplementalGroups:
-    type: RunAsAny
-  volumes:
-  - configMap
-  - downwardAPI
-  - emptyDir
-  - persistentVolumeClaim
-  - secret
-- apiVersion: v1
   kind: ImageStream
   metadata:
     labels:
@@ -74,17 +30,10 @@ objects:
         kind: "ImageStreamTag"
         name: "systemd-httpd:centos7"
     triggers:
-    - generic:
-        secret: b725254e6534fd70
-      type: Generic
     - type: ConfigChange
 - apiVersion: v1
   kind: DeploymentConfig
   metadata:
-    annotations:
-      openshift.io/generated-by: OpenShiftWebConsole
-    creationTimestamp: null
-    generation: 6
     labels:
       app: systemd-httpd
     name: systemd-httpd
@@ -104,9 +53,6 @@ objects:
       type: Rolling
     template:
       metadata:
-        annotations:
-          openshift.io/generated-by: OpenShiftWebConsole
-        creationTimestamp: null
         labels:
           app: systemd-httpd
           deploymentconfig: systemd-httpd
@@ -127,33 +73,12 @@ objects:
               port: 80
             timeoutSeconds: 1
           resources: {}
-          terminationMessagePath: /dev/termination-log
-          volumeMounts:
-          - mountPath: /sys/fs/cgroup
-            name: cgroup
-          - mountPath: /run
-            name: run
-          - mountPath: /tmp
-            name: tmp
-          - mountPath: /var/log/httpd
-            name: log
         dnsPolicy: ClusterFirst
         restartPolicy: Always
         securityContext: {}
-        serviceAccount: systemd
-        serviceAccountName: systemd
+        serviceAccount: anyuid
+        serviceAccountName: anyuid
         terminationGracePeriodSeconds: 30
-        volumes:
-        - hostPath:
-            path: /sys/fs/cgroup
-          name: cgroup
-        - emptyDir: {}
-          name: run
-        - emptyDir: {}
-          name: tmp
-        - emptyDir: {}
-          name: log
-    test: false
     triggers:
     - type: ConfigChange
     - imageChangeParams:
@@ -167,9 +92,6 @@ objects:
 - apiVersion: v1
   kind: Service
   metadata:
-    annotations:
-      openshift.io/generated-by: OpenShiftWebConsole
-    creationTimestamp: null
     labels:
       app: systemd-httpd
     name: systemd-httpd
@@ -186,9 +108,6 @@ objects:
 - apiVersion: v1
   kind: Route
   metadata:
-    annotations:
-      openshift.io/host.generated: "true"
-    creationTimestamp: null
     labels:
       app: systemd-httpd
     name: systemd-httpd
@@ -198,4 +117,3 @@ objects:
     to:
       kind: Service
       name: systemd-httpd
-      weight: 100
