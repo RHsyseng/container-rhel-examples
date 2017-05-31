@@ -20,6 +20,7 @@ objects:
     source:
       git:
         uri: ${GIT_URI}
+        ref: ${GIT_REF}
       contextDir: "starter-systemd"
     strategy: 
       type: "Docker"
@@ -131,6 +132,11 @@ parameters:
   name: GIT_URI
   required: true
   value: https://github.com/RHsyseng/container-rhel-examples
+- description: Github branch
+  displayName: Github branch
+  name: GIT_REF
+  required: true
+  value: master
 - description: Dockerfile
   displayName: Dockerfile
   name: DOCKERFILE
