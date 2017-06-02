@@ -7,8 +7,7 @@ LABEL name="acme/starter-epel" \
       vendor="Acme Corp" \
       version="3.2" \
       release="1" \
-### Recommended labels below
-      build-date="2016-10-12T14:12:54.553894Z" \
+### Required labels above - recommended below
       url="https://www.acme.io" \
       summary="Acme Corp's starter-epel app" \
       description="starter-epel app will do ....." \
