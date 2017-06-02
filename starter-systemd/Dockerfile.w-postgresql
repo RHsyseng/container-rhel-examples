@@ -1,4 +1,4 @@
-### docker build --pull -t acme/starter-systemd -t acme/starter-systemd:v3.2 .
+### docker build --pull -t acme/starter-systemd:w-postgresql -f Dockerfile.w-postgresql .
 FROM registry.access.redhat.com/rhel7-init
 MAINTAINER Red Hat Systems Engineering <refarch-feedback@redhat.com>
 
@@ -28,10 +28,16 @@ RUN yum clean all && yum-config-manager --disable \* &> /dev/null && \
     yum-config-manager --enable rhel-7-server-rpms,rhel-7-server-optional-rpms &> /dev/null && \
     yum -y update-minimal --security --sec-severity=Important --sec-severity=Critical --setopt=tsflags=nodocs && \
 ### Add your package needs to this installation line
-    yum -y install --setopt=tsflags=nodocs golang-github-cpuguy83-go-md2man cronie httpd && \
+    yum -y install --setopt=tsflags=nodocs golang-github-cpuguy83-go-md2man cronie httpd postgresql-server && \
 ### help file markdown to man conversion
     go-md2man -in /tmp/help.md -out /help.1 && yum -y remove golang-github-cpuguy83-go-md2man && \
     yum clean all
 
 ### systemd requirements
-RUN systemctl enable httpd crond
+RUN systemctl enable httpd crond postgresql
+
+### initialize db
+ENV LANG en_US.utf8
+USER 26
+RUN initdb -D /var/lib/pgsql/data
+USER 0
