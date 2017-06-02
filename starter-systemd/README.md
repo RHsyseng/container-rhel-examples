@@ -33,17 +33,30 @@ $ docker logs starter-systemd
 $ docker exec starter-systemd systemctl status
 $ docker exec starter-systemd journalctl
 ```
+### Running in OpenShift w/ the anyuid scc & root uid
+```shell
+$ oc new-project <project>
+
+$ oc adm policy add-scc-to-user anyuid -z default
+$ oc create -f systemd-ocp-template.yaml
+
+# deploy rhel7 image
+$ oc new-app --template=systemd-httpd
+
+# OR deploy centos7 image
+# oc new-app --template=systemd-httpd -p DOCKERFILE=Dockerfile.centos7
+```
 ### Running in OpenShift w/ a restrictive scc & arbitrary uid
 ```shell
 $ oc new-project <project>
 
-$ oc create -f systemd-ocp-template.yaml
+$ oc create -f systemd-ocp-template-arbuid.yaml
 # oc adm policy add-scc-to-user anyuid -z default
 
 # deploy rhel7 image
 $ oc new-app --template=systemd-httpd -p NAMESPACE=$(oc project -q)
 # OR deploy centos7 image
-# oc new-app --template=systemd-httpd -p NAMESPACE=$(oc project -q) -p DOCKERFILE=Dockerfile.centos7
+# oc new-app --template=systemd-httpd -p NAMESPACE=$(oc project -q) -p DOCKERFILE=Dockerfile.arbuid.centos7
 ```
 ### Systemd service unit file considerations w/ a restrictive scc deployment (above)
 
@@ -57,17 +70,4 @@ ExecStart=/bin/sh -p -c "/bin/myservice.sh"
 Type=forking
 Restart=on-failure
 ...
-```
-### Running in OpenShift w/ the anyuid scc & root uid
-```shell
-$ oc new-project <project>
-
-$ oc adm policy add-scc-to-user anyuid -z default
-$ oc create -f systemd-ocp-template-root.yaml
-
-# deploy rhel7 image
-$ oc new-app --template=systemd-httpd
-
-# OR deploy centos7 image
-# oc new-app --template=systemd-httpd -p DOCKERFILE=Dockerfile.root.centos7
 ```

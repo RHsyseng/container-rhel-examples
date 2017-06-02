@@ -12,7 +12,6 @@ LABEL name="acme/starter-systemd" \
       summary="Acme Corp's Starter app" \
       description="Starter app will do ....." \
       run='docker run -tdi --name ${NAME} \
-      -u 123456 \
       -p 8080:80 \
       ${IMAGE}' \
       io.k8s.description="Starter app will do ....." \
@@ -25,18 +24,6 @@ RUN yum -y update-minimal --security --sec-severity=Important --sec-severity=Cri
     yum -y --setopt=tsflags=nodocs install cronie httpd && \
     yum clean all
 
-COPY user_setup systemd_setup /tmp/
-
-### Setup user for build execution and application runtime
-ENV APP_ROOT=/opt/app-root \
-    USER_NAME=default \
-    USER_UID=10001
-ENV APP_HOME=${APP_ROOT}/src  PATH=$PATH:${APP_ROOT}/bin
-RUN mkdir -p ${APP_HOME} ${APP_ROOT}/etc
-COPY bin/ ${APP_ROOT}/bin/
-RUN chmod -R ug+x ${APP_ROOT}/bin ${APP_ROOT}/etc /tmp/user_setup /tmp/systemd_setup && \
-    /tmp/user_setup
-
 ####### Add app-specific needs below. #######
 ### systemd requirements - to cleanly shutdown systemd, use SIGRTMIN+3
 STOPSIGNAL SIGRTMIN+3
@@ -46,12 +33,6 @@ RUN systemctl mask ${MASK_JOBS} && \
     for i in ${MASK_JOBS}; do find /usr/lib/systemd/ -iname $i | grep ".wants" | xargs rm -f; done && \
     rm -f /etc/fstab && \
     systemctl set-default multi-user.target && \
-    systemctl enable httpd crond && \
-    /tmp/systemd_setup
+    systemctl enable httpd crond
 
-### Containers should NOT run as root as a good practice
-USER ${USER_UID}
-WORKDIR ${APP_ROOT}
-### arbitrary uid recognition at runtime - for OpenShift deployments
-RUN sed "s@${USER_NAME}:x:${USER_UID}:@${USER_NAME}:x:\${USER_ID}:@g" /etc/passwd > ${APP_ROOT}/etc/passwd.template
 CMD [ "/sbin/init" ]

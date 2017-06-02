@@ -1,4 +1,4 @@
-### docker build --pull -t acme/starter-systemd:root -f Dockerfile.root .
+### docker build --pull -t acme/starter-systemd:arbuid -f Dockerfile.arbuid .
 FROM registry.access.redhat.com/rhel7-init
 MAINTAINER Red Hat Systems Engineering <refarch-feedback@redhat.com>
 
@@ -12,6 +12,7 @@ LABEL name="acme/starter-systemd" \
       summary="Acme Corp's Starter app" \
       description="Starter app will do ....." \
       run='docker run -tdi --name ${NAME} \
+      -u 123456 \
       -p 8080:80 \
       ${IMAGE}' \
       io.k8s.description="Starter app will do ....." \
@@ -21,7 +22,7 @@ LABEL name="acme/starter-systemd" \
 
 ### Atomic Help File - Write in Markdown, it will be converted to man format at build time.
 ### https://github.com/projectatomic/container-best-practices/blob/master/creating/help.adoc
-COPY help.md /tmp/
+COPY user_setup systemd_setup help.md /tmp/
 
 RUN yum clean all && yum-config-manager --disable \* &> /dev/null && \
 ### Add necessary Red Hat repos here
@@ -33,5 +34,26 @@ RUN yum clean all && yum-config-manager --disable \* &> /dev/null && \
     go-md2man -in /tmp/help.md -out /help.1 && yum -y remove golang-github-cpuguy83-go-md2man && \
     yum clean all
 
+### Setup user for build execution and application runtime
+ENV APP_ROOT=/opt/app-root \
+    USER_NAME=default \
+    USER_UID=10001
+ENV APP_HOME=${APP_ROOT}/src  PATH=$PATH:${APP_ROOT}/bin
+RUN mkdir -p ${APP_HOME} ${APP_ROOT}/etc
+COPY bin/ ${APP_ROOT}/bin/
+RUN chmod -R ug+x ${APP_ROOT}/bin ${APP_ROOT}/etc /tmp/user_setup /tmp/systemd_setup && \
+    /tmp/user_setup
+
+####### Add app-specific needs below. #######
 ### systemd requirements
-RUN systemctl enable httpd crond
+ENV MASK_JOBS="sys-fs-fuse-connections.mount getty.target systemd-initctl.socket systemd-logind.service"
+RUN systemctl mask ${MASK_JOBS} && \
+    for i in ${MASK_JOBS}; do find /usr/lib/systemd/ -iname $i | grep ".wants" | xargs rm -f; done && \
+    systemctl enable httpd crond && \
+    /tmp/systemd_setup
+
+### Containers should NOT run as root as a good practice
+USER ${USER_UID}
+WORKDIR ${APP_ROOT}
+### arbitrary uid recognition at runtime - for OpenShift deployments
+RUN sed "s@${USER_NAME}:x:${USER_UID}:@${USER_NAME}:x:\${USER_ID}:@g" /etc/passwd > ${APP_ROOT}/etc/passwd.template
