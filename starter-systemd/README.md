@@ -51,14 +51,13 @@ $ oc new-app --template=systemd-httpd
 $ oc new-project <project>
 
 $ oc create -f systemd-ocp-template-arbuid.yaml
-# oc adm policy add-scc-to-user anyuid -z default
 
 # deploy rhel7 image
 $ oc new-app --template=systemd-httpd -p NAMESPACE=$(oc project -q)
 # OR deploy centos7 image
 # oc new-app --template=systemd-httpd -p NAMESPACE=$(oc project -q) -p DOCKERFILE=Dockerfile.arbuid.centos7
 ```
-### Systemd service unit file considerations w/ a restrictive scc deployment (above)
+### Systemd service unit file considerations w/ a __restrictive__ scc deployment
 
 If you plan to use systemd unit files that actually call a shell as a ExecStart, the invoked shell environment needs to be relaxed in order to prevent your EUID from being reset to RUID by bash/sh.
 This applies to the calling and execution shell on script, the "-p" flag is used to accomplish this in the example unit below :  
