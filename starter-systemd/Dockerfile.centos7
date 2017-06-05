@@ -27,9 +27,9 @@ RUN yum -y update-minimal --security --sec-severity=Important --sec-severity=Cri
 ####### Add app-specific needs below. #######
 ### systemd requirements - to cleanly shutdown systemd, use SIGRTMIN+3
 STOPSIGNAL SIGRTMIN+3
-ENV container=oci \
-    MASK_JOBS="sys-fs-fuse-connections.mount getty.target systemd-initctl.socket systemd-logind.service"
-RUN systemctl mask ${MASK_JOBS} && \
+ENV container=oci
+RUN MASK_JOBS="sys-fs-fuse-connections.mount getty.target systemd-initctl.socket systemd-logind.service" && \
+    systemctl mask ${MASK_JOBS} && \
     for i in ${MASK_JOBS}; do find /usr/lib/systemd/ -iname $i | grep ".wants" | xargs rm -f; done && \
     rm -f /etc/fstab && \
     systemctl set-default multi-user.target && \
