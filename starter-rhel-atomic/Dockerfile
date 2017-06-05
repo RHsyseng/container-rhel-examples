@@ -28,7 +28,7 @@ RUN INSTALL_PKGS="golang-github-cpuguy83-go-md2man \
     microdnf --enablerepo=rhel-7-server-rpms --enablerepo=rhel-7-server-optional-rpms \
       install --nodocs ${INSTALL_PKGS} && \
 ### help file markdown to man conversion
-    go-md2man -in /tmp/help.md -out /help.1 && microdnf remove golang-github-cpuguy83-go-md2man && \
+    go-md2man -in /tmp/help.md -out /help.1 && \
     microdnf clean all
 
 ### Setup user for build execution and application runtime

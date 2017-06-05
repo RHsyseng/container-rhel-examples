@@ -31,7 +31,6 @@ RUN yum clean all && \
     yum -y install --disablerepo "*" --enablerepo ${REPOLIST} --setopt=tsflags=nodocs ${INSTALL_PKGS} && \
 ### help file markdown to man conversion
     go-md2man -in /tmp/help.md -out /help.1 && \
-    yum -y erase golang-github-cpuguy83-go-md2man && \
     yum clean all
 
 ### Setup user for build execution and application runtime
