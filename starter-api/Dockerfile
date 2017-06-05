@@ -21,14 +21,18 @@ LABEL name="acme/starter-api" \
 ### https://github.com/projectatomic/container-best-practices/blob/master/creating/help.adoc
 COPY help.md user_setup /tmp/
 
-RUN yum clean all && yum-config-manager --disable \* &> /dev/null && \
+RUN yum clean all && \
 ### Add necessary Red Hat repos here
-    yum-config-manager --enable rhel-7-server-rpms,rhel-7-server-optional-rpms &> /dev/null && \
-    yum -y update-minimal --security --sec-severity=Important --sec-severity=Critical --setopt=tsflags=nodocs && \
-### Add your package needs to this installation line
-    yum -y install --setopt=tsflags=nodocs golang-github-cpuguy83-go-md2man iputils bind-utils && \
+    REPOLIST=rhel-7-server-rpms,rhel-7-server-optional-rpms \
+### Add your package needs here
+    INSTALL_PKGS="golang-github-cpuguy83-go-md2man \
+      iputils \
+      bind-utils" && \
+    yum -y update-minimal --disablerepo "*" --enablerepo ${REPOLIST} --setopt=tsflags=nodocs \
+      --security --sec-severity=Important --sec-severity=Critical && \
+    yum -y install --disablerepo "*" --enablerepo ${REPOLIST} --setopt=tsflags=nodocs ${INSTALL_PKGS} && \
 ### help file markdown to man conversion
-    go-md2man -in /tmp/help.md -out /help.1 && yum -y remove golang-github-cpuguy83-go-md2man && \
+    go-md2man -in /tmp/help.md -out /help.1 && \
 ### EPEL needs
     curl -o epel-release-latest-7.noarch.rpm -SL https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm \
             --retry 9 --retry-max-time 0 -C - && \
