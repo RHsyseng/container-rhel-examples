@@ -21,10 +21,12 @@ LABEL name="acme/starter-rhel-atomic" \
 ### https://github.com/projectatomic/container-best-practices/blob/master/creating/help.adoc
 COPY help.md user_setup /tmp/
 
+### Add your package needs here
+RUN INSTALL_PKGS="golang-github-cpuguy83-go-md2man \
+      shadow-utils" && \
 ### Add necessary Red Hat repos here
-RUN microdnf --enablerepo=rhel-7-server-rpms --enablerepo=rhel-7-server-optional-rpms \
-### Add your package needs to this installation line
-    install --nodocs shadow-utils golang-github-cpuguy83-go-md2man && \
+    microdnf --enablerepo=rhel-7-server-rpms --enablerepo=rhel-7-server-optional-rpms \
+      install --nodocs ${INSTALL_PKGS} && \
 ### help file markdown to man conversion
     go-md2man -in /tmp/help.md -out /help.1 && microdnf remove golang-github-cpuguy83-go-md2man && \
     microdnf clean all

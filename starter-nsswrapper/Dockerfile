@@ -23,18 +23,19 @@ LABEL name="acme/starter-nsswrapper" \
 ### https://github.com/projectatomic/container-best-practices/blob/master/creating/help.adoc
 COPY help.md user_setup /tmp/
 
-### Add necessary Red Hat repos here
-ENV REPOLIST=rhel-7-server-rpms,rhel-7-server-optional-rpms,rhel-7-server-ose-3.5-rpms
 RUN yum clean all && \
+### Add necessary Red Hat repos here
+    REPOLIST=rhel-7-server-rpms,rhel-7-server-optional-rpms,rhel-7-server-ose-3.5-rpms \
+### Add your package needs here
+    INSTALL_PKGS="golang-github-cpuguy83-go-md2man \
+      nss_wrapper \
+      gettext" && \
     yum -y update-minimal --disablerepo "*" --enablerepo ${REPOLIST} --setopt=tsflags=nodocs \
       --security --sec-severity=Important --sec-severity=Critical && \
-### Add your package needs here
-    yum -y install --disablerepo "*" --enablerepo ${REPOLIST} --setopt=tsflags=nodocs \
-      golang-github-cpuguy83-go-md2man \
-      nss_wrapper \
-      gettext && \
+    yum -y install --disablerepo "*" --enablerepo ${REPOLIST} --setopt=tsflags=nodocs ${INSTALL_PKGS} && \
 ### help file markdown to man conversion
-    go-md2man -in /tmp/help.md -out /help.1 && yum -y remove golang-github-cpuguy83-go-md2man && \
+    go-md2man -in /tmp/help.md -out /help.1 && \
+    yum -y erase golang-github-cpuguy83-go-md2man && \
     yum clean all
 
 ### Setup user for build execution and application runtime
