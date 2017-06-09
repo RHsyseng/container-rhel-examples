@@ -24,7 +24,7 @@
           --sec-severity=Critical 
           --setopt=tsflags=nodocs 
           --disablerepo "*" 
-          --enablerepo rhel-7-server-rpms,rhel7-server-optional-rpms
+          --enablerepo rhel-7-server-rpms
 
     - name: Install EPEL 
       yum:
