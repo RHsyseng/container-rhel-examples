@@ -21,9 +21,8 @@ LABEL name="acme/starter-api" \
 ### https://github.com/projectatomic/container-best-practices/blob/master/creating/help.adoc
 COPY help.md user_setup /tmp/
 
-RUN yum clean all && \
 ### Add necessary Red Hat repos here
-    REPOLIST=rhel-7-server-rpms,rhel-7-server-optional-rpms \
+RUN REPOLIST=rhel-7-server-rpms,rhel-7-server-optional-rpms \
 ### Add your package needs here
     INSTALL_PKGS="golang-github-cpuguy83-go-md2man \
       iputils \

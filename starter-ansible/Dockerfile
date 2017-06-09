@@ -58,8 +58,7 @@ COPY bin/ ${APP_ROOT}/bin/
 # Once finished will remove all packages that are no longer needed.
 # -----------------------------------------------
 
-RUN yum clean all && \
-    yum -y install --disablerepo "*" \
+RUN yum -y install --disablerepo "*" \
                    --enablerepo rhel-7-server-rpms,rhel-7-server-optional-rpms,rhel-7-server-ose-3.5-rpms \
                    --setopt=tsflags=nodocs ansible && \
     ansible-playbook /tmp/init.yml -c local -i localhost, \
