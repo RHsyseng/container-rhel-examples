@@ -21,12 +21,11 @@ LABEL name="acme/starter" \
 ### https://github.com/projectatomic/container-best-practices/blob/master/creating/help.adoc
 COPY help.md user_setup /tmp/
 
-RUN yum clean all && \
 ### Add necessary Red Hat repos here
-    REPOLIST=rhel-7-server-rpms,rhel-7-server-optional-rpms \
+RUN REPOLIST=rhel-7-server-rpms,rhel-7-server-optional-rpms \
 ### Add your package needs here
     INSTALL_PKGS="golang-github-cpuguy83-go-md2man" && \
-    yum -y update-minimal --disablerepo "*" --enablerepo ${REPOLIST} --setopt=tsflags=nodocs \
+    yum -y update-minimal --disablerepo "*" --enablerepo rhel-7-server-rpms --setopt=tsflags=nodocs \
       --security --sec-severity=Important --sec-severity=Critical && \
     yum -y install --disablerepo "*" --enablerepo ${REPOLIST} --setopt=tsflags=nodocs ${INSTALL_PKGS} && \
 ### help file markdown to man conversion

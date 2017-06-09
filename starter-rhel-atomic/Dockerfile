@@ -29,6 +29,7 @@ RUN INSTALL_PKGS="golang-github-cpuguy83-go-md2man \
       install --nodocs ${INSTALL_PKGS} && \
 ### help file markdown to man conversion
     go-md2man -in /tmp/help.md -out /help.1 && \
+    microdnf remove golang-github-cpuguy83-go-md2man && \
     microdnf clean all
 
 ### Setup user for build execution and application runtime
