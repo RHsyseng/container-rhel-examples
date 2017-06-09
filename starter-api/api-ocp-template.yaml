@@ -94,5 +94,4 @@ objects:
         from:
           kind: ImageStreamTag
           name: starter-api:latest
-          namespace: starter-api
       type: ImageChange
