@@ -22,22 +22,18 @@ LABEL name="acme/starter-api" \
 COPY help.md user_setup /tmp/
 
 ### Add necessary Red Hat repos here
-RUN REPOLIST=rhel-7-server-rpms,rhel-7-server-optional-rpms \
+RUN REPOLIST=rhel-7-server-rpms,rhel-7-server-optional-rpms,epel \
 ### Add your package needs here
     INSTALL_PKGS="golang-github-cpuguy83-go-md2man \
       iputils \
-      bind-utils" && \
+      bind-utils \
+      jq" && \
+    yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm && \
     yum -y update-minimal --disablerepo "*" --enablerepo rhel-7-server-rpms --setopt=tsflags=nodocs \
       --security --sec-severity=Important --sec-severity=Critical && \
     yum -y install --disablerepo "*" --enablerepo ${REPOLIST} --setopt=tsflags=nodocs ${INSTALL_PKGS} && \
 ### help file markdown to man conversion
     go-md2man -in /tmp/help.md -out /help.1 && \
-### EPEL needs
-    curl -o epel-release-latest-7.noarch.rpm -SL https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm \
-            --retry 9 --retry-max-time 0 -C - && \
-    rpm -ivh epel-release-latest-7.noarch.rpm && rm epel-release-latest-7.noarch.rpm && \
-    yum -y install --setopt=tsflags=nodocs jq && \
-    yum-config-manager --disable epel && \
     yum clean all
 
 ### Setup user for build execution and application runtime

@@ -24,7 +24,8 @@ COPY help.md user_setup /tmp/
 ### Add necessary Red Hat repos here
 RUN REPOLIST=rhel-7-server-rpms,rhel-7-server-optional-rpms,epel \
 ### Add your package needs here
-    INSTALL_PKGS="golang-github-cpuguy83-go-md2man jq" && \
+    INSTALL_PKGS="golang-github-cpuguy83-go-md2man \
+    jq" && \
     yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm && \
     yum -y update-minimal --disablerepo "*" --enablerepo rhel-7-server-rpms --setopt=tsflags=nodocs \
       --security --sec-severity=Important --sec-severity=Critical && \
