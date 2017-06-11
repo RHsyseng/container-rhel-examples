@@ -19,28 +19,38 @@ LABEL name="acme/starter-rhel-atomic" \
 
 ### Atomic Help File - Write in Markdown, it will be converted to man format at build time.
 ### https://github.com/projectatomic/container-best-practices/blob/master/creating/help.adoc
-COPY help.md user_setup /tmp/
-
-### Add your package needs here
-RUN INSTALL_PKGS="golang-github-cpuguy83-go-md2man \
-      shadow-utils" && \
-### Add necessary Red Hat repos here
-    microdnf --enablerepo=rhel-7-server-rpms --enablerepo=rhel-7-server-optional-rpms \
-      install --nodocs ${INSTALL_PKGS} && \
-### help file markdown to man conversion
-    go-md2man -in /tmp/help.md -out /help.1 && \
-    microdnf remove golang-github-cpuguy83-go-md2man && \
-    microdnf clean all
+COPY help.1 /
 
 ### Setup user for build execution and application runtime
 ENV APP_ROOT=/opt/app-root \
-    USER_NAME=default \
-    USER_UID=10001
+    USER_NAME=nobody \
+    USER_UID=99
 ENV APP_HOME=${APP_ROOT}/src  PATH=$PATH:${APP_ROOT}/bin
+
+### Add your package needs here
+#RUN INSTALL_PKGS="golang-github-cpuguy83-go-md2man \
+#      shadow-utils \
+#      libsemanage \
+#      ustr \
+#      audit-libs \
+#      libcap-ng" && \
+### Add necessary Red Hat repos here
+#    microdnf --enablerepo=rhel-7-server-rpms --enablerepo=rhel-7-server-optional-rpms \
+#      install --nodocs ${INSTALL_PKGS} && \
+### help file markdown to man conversion
+#    go-md2man -in /tmp/help.md -out /help.1 && \
+#    useradd -l -u ${USER_UID} -r -g 0 -d ${APP_ROOT} -s /sbin/nologin \
+#      -c "${USER_NAME} application user" ${USER_NAME} && \
+#    microdnf remove golang-github-cpuguy83-go-md2man shadow-utils \
+#      libsemanage ustr audit-libs libcap-ng && \
+#    microdnf clean all
+
 RUN mkdir -p ${APP_HOME}
 COPY bin/ ${APP_ROOT}/bin/
-RUN chmod -R ug+x ${APP_ROOT}/bin /tmp/user_setup && \
-    /tmp/user_setup
+RUN chmod -R ug+x ${APP_ROOT}/bin && \
+    chown -R ${USER_UID}:0 ${APP_ROOT} && \
+    chmod -R g+rw ${APP_ROOT} && \
+    find ${APP_ROOT} -type d -exec chmod g+x {} +
 
 ####### Add app-specific needs below. #######
 ### Containers should NOT run as root as a good practice
