@@ -24,8 +24,10 @@ http://developers.redhat.com/products/cdk/overview/
 Once your host is setup you can begin your Dockerfile with this example. This will ensure you're using the supported/secure base image instead of one you might find on docker's public hub, and many other benefits discussed in the best practices link above.
 ```shell
 $ cd starter-scratch/
-$ BDIR=/build; docker run -tiv ${PWD}:${BDIR}:z registry.access.redhat.com/rhel7 bash -c "chmod u+x ${BDIR}/build.sh; ${BDIR}/build.sh"
+$ BDIR=/build; docker run --rm -tiv ${PWD}:${BDIR}:z registry.access.redhat.com/rhel7 bash -c "chmod u+x ${BDIR}/build.sh; ${BDIR}/build.sh"
 $ docker build --pull -t acme/starter-scratch .
 $ docker run -tdip 8080:8080 acme/starter-scratch
+# OR
+# atomic run acme/starter-scratch
 $ curl http://localhost:8080
 ```

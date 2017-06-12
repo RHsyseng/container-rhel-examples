@@ -5,13 +5,15 @@ VERSION = v3.2
 REGISTRY = 10.0.1.1
 REGISTRY_SERVER = 172.30.93.229:5000
 OUTPUT_DIR = o
+BDIR = /build
 
 all: build
-build: starter starter-rhel-atomic  starter-ansible  starter-arbitrary-uid  starter-systemd  starter-epel  starter-api  starter-nsswrapper
+build: starter  starter-rhel-atomic  starter-ansible  starter-arbitrary-uid  starter-scratch  starter-systemd  starter-epel  starter-api  starter-nsswrapper
 starter: ${OUTPUT_DIR}/starter.o
 starter-rhel-atomic: ${OUTPUT_DIR}/starter-rhel-atomic.o
 starter-ansible: ${OUTPUT_DIR}/starter-ansible.o
 starter-arbitrary-uid: ${OUTPUT_DIR}/starter-arbitrary-uid.o
+starter-scratch: ${OUTPUT_DIR}/starter-scratch.o
 starter-systemd: ${OUTPUT_DIR}/starter-systemd.o
 starter-epel: ${OUTPUT_DIR}/starter-epel.o
 starter-api: ${OUTPUT_DIR}/starter-api.o
@@ -37,6 +39,12 @@ ${OUTPUT_DIR}/starter-arbitrary-uid.o: starter-arbitrary-uid/*
 	docker build --pull -t $(CONTEXT)/starter-arbitrary-uid:$(VERSION) -t $(CONTEXT)/starter-arbitrary-uid starter-arbitrary-uid/	
 	@if docker images $(CONTEXT)/starter-arbitrary-uid:$(VERSION); then touch ${OUTPUT_DIR}/starter-arbitrary-uid.o; fi
 
+${OUTPUT_DIR}/starter-scratch.o: starter-scratch/*
+	@mkdir -p ${OUTPUT_DIR}
+	docker run --rm -tiv ${PWD}/starter-scratch:${BDIR}:z registry.access.redhat.com/rhel7 bash -c "chmod u+x ${BDIR}/build.sh; ${BDIR}/build.sh"
+	docker build --pull -t $(CONTEXT)/starter-scratch:$(VERSION) -t $(CONTEXT)/starter-scratch starter-scratch/	
+	@if docker images $(CONTEXT)/starter-scratch:$(VERSION); then touch ${OUTPUT_DIR}/starter-scratch.o; fi
+
 ${OUTPUT_DIR}/starter-systemd.o: starter-systemd/*
 	@mkdir -p ${OUTPUT_DIR}
 	docker build --pull -t $(CONTEXT)/starter-systemd:$(VERSION) -t $(CONTEXT)/starter-systemd starter-systemd/	
@@ -61,7 +69,10 @@ ${OUTPUT_DIR}/starter-nsswrapper.o: starter-nsswrapper/*
 #	env NAME=$(NAME) VERSION=$(VERSION) ./test.sh
 
 clean:
-	rm -r ${OUTPUT_DIR}/
+	rm -r ${OUTPUT_DIR}/ \
+	starter-scratch/*.go \
+	starter-scratch/*.1 \
+	starter-scratch/outyet
 
 #tag_production:
 #	docker tag $(BUILD_NAME_001):latest $(BUILD_NAME_001):production
