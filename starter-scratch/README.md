@@ -24,7 +24,7 @@ http://developers.redhat.com/products/cdk/overview/
 Once your host is setup you can begin your Dockerfile with this example.
 ```shell
 $ cd starter-scratch/
-$ GO_BUILD=github.com/golang/example/outyet BDIR=/build; docker run --rm -tiv ${PWD}:${BDIR}:z registry.access.redhat.com/rhel7 bash -c "chmod u+x ${BDIR}/build.sh; ${BDIR}/build.sh ${GO_BUILD}"
+$ chmod u+x build.sh; ./build.sh
 $ docker build --pull -t acme/starter-scratch .
 $ docker run -tdip 8080:8080 acme/starter-scratch
 # OR
