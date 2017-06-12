@@ -1,27 +1,28 @@
 CONTEXT = acme
-USERNAME = ""
-PASSWORD = ""
 VERSION = v3.2
-REGISTRY = 10.0.1.1
-REGISTRY_SERVER = 172.30.93.229:5000
 OUTPUT_DIR = o
+DIRS = starter-scratch
 
 all: build
 build: starter  starter-rhel-atomic  starter-ansible  starter-arbitrary-uid  starter-scratch  starter-systemd  starter-epel  starter-api  starter-nsswrapper
 starter: ${OUTPUT_DIR}/starter.o
+starter-scratch: starter-scratch/build
 starter-rhel-atomic: ${OUTPUT_DIR}/starter-rhel-atomic.o
 starter-ansible: ${OUTPUT_DIR}/starter-ansible.o
 starter-arbitrary-uid: ${OUTPUT_DIR}/starter-arbitrary-uid.o
-starter-scratch: ${OUTPUT_DIR}/starter-scratch.o
 starter-systemd: ${OUTPUT_DIR}/starter-systemd.o
 starter-epel: ${OUTPUT_DIR}/starter-epel.o
 starter-api: ${OUTPUT_DIR}/starter-api.o
 starter-nsswrapper: ${OUTPUT_DIR}/starter-nsswrapper.o
 
+
 ${OUTPUT_DIR}/starter.o: starter/*
 	@mkdir -p ${OUTPUT_DIR}
 	docker build --pull -t $(CONTEXT)/starter:$(VERSION) -t $(CONTEXT)/starter starter/	
 	@if docker images $(CONTEXT)/starter:$(VERSION); then touch ${OUTPUT_DIR}/starter.o; fi
+
+starter-scratch/build:
+	cd starter-scratch/; make
 
 ${OUTPUT_DIR}/starter-rhel-atomic.o: starter-rhel-atomic/*
 	@mkdir -p ${OUTPUT_DIR}
@@ -37,13 +38,6 @@ ${OUTPUT_DIR}/starter-arbitrary-uid.o: starter-arbitrary-uid/*
 	@mkdir -p ${OUTPUT_DIR}
 	docker build --pull -t $(CONTEXT)/starter-arbitrary-uid:$(VERSION) -t $(CONTEXT)/starter-arbitrary-uid starter-arbitrary-uid/	
 	@if docker images $(CONTEXT)/starter-arbitrary-uid:$(VERSION); then touch ${OUTPUT_DIR}/starter-arbitrary-uid.o; fi
-
-${OUTPUT_DIR}/starter-scratch.o: starter-scratch/*
-	@mkdir -p ${OUTPUT_DIR}
-	@chmod u+x starter-scratch/build.sh
-	starter-scratch/build.sh
-	docker build --pull -t $(CONTEXT)/starter-scratch:$(VERSION) -t $(CONTEXT)/starter-scratch starter-scratch/	
-	@if docker images $(CONTEXT)/starter-scratch:$(VERSION); then touch ${OUTPUT_DIR}/starter-scratch.o; fi
 
 ${OUTPUT_DIR}/starter-systemd.o: starter-systemd/*
 	@mkdir -p ${OUTPUT_DIR}
@@ -65,20 +59,6 @@ ${OUTPUT_DIR}/starter-nsswrapper.o: starter-nsswrapper/*
 	docker build --pull -t $(CONTEXT)/starter-nsswrapper:$(VERSION) -t $(CONTEXT)/starter-nsswrapper starter-nsswrapper/	
 	@if docker images $(CONTEXT)/starter-nsswrapper:$(VERSION); then touch ${OUTPUT_DIR}/starter-nsswrapper.o; fi
 
-#test:
-#	env NAME=$(NAME) VERSION=$(VERSION) ./test.sh
-
 clean:
-	rm -r ${OUTPUT_DIR}/ \
-	starter-scratch/*.1 \
-	starter-scratch/main
-
-#tag_production:
-#	docker tag $(BUILD_NAME_001):latest $(BUILD_NAME_001):production
-#	docker tag $(CONTEXT)/$(BUILD_NAME_001):$(VERSION) $(REGISTRY_SERVER)/$(CONTEXT)/$(BUILD_NAME_001):$(VERSION)
-
-#tag_registry:
-#	docker tag $(BUILD_NAME_001) $(REGISTRY_SERVER)/$(BUILD_NAME_001)
-
-#push:
-#	atomic push -u $(USERNAME) -p $(PASSWORD) $(REGISTRY_SERVER)/$(BUILD_NAME_001):latest
+	rm -rf ${OUTPUT_DIR}/
+	for d in $(DIRS); do (cd $$d; make clean ); done
