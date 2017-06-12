@@ -1,8 +1,8 @@
-## Starter RHEL-based Image w/ best practices 
+## Starter scratch Image w/ best practices 
 This image aims to include Red Hat's most critical [container best practices](http://docs.projectatomic.io/container-best-practices/).
 
-### Building an image on RHEL
-The easiest way to get started building your own rhel-based image is to first ensure you're using Red Hat's supported docker package on a registered RHEL7 or Atomic Server.
+### Building a scratch image on RHEL
+The easiest way to get started building your own scratch image is to first ensure you're using Red Hat's supported docker package on a registered RHEL7 or Atomic Server.
 
 Be sure you've enabled the following repos after your system is registered:
 ```shell
@@ -21,7 +21,7 @@ http://developers.redhat.com/products/rhel/overview/
 
 http://developers.redhat.com/products/cdk/overview/
 
-Once your host is setup you can begin your Dockerfile with this example. This will ensure you're using the supported/secure base image instead of one you might find on docker's public hub, and many other benefits discussed in the best practices link above.
+Once your host is setup you can begin your Dockerfile with this example.
 ```shell
 $ cd starter-scratch/
 $ BDIR=/build; docker run --rm -tiv ${PWD}:${BDIR}:z registry.access.redhat.com/rhel7 bash -c "chmod u+x ${BDIR}/build.sh; ${BDIR}/build.sh"
