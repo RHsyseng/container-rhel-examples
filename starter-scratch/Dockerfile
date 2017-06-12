@@ -17,5 +17,5 @@ LABEL name="acme/starter-scratch" \
       io.openshift.expose-services="8080:http" \
       io.openshift.tags="acme,starter,scratch"
 
-ADD outyet help.1 /
-CMD ["/outyet"]
+ADD main help.1 /
+CMD ["/main"]

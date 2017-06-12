@@ -6,6 +6,7 @@ REGISTRY = 10.0.1.1
 REGISTRY_SERVER = 172.30.93.229:5000
 OUTPUT_DIR = o
 BDIR = /build
+GO_BUILD=github.com/golang/example/outyet
 
 all: build
 build: starter  starter-rhel-atomic  starter-ansible  starter-arbitrary-uid  starter-scratch  starter-systemd  starter-epel  starter-api  starter-nsswrapper
@@ -28,7 +29,6 @@ ${OUTPUT_DIR}/starter-rhel-atomic.o: starter-rhel-atomic/*
 	@mkdir -p ${OUTPUT_DIR}
 	docker build --pull -t $(CONTEXT)/starter-rhel-atomic:$(VERSION) -t $(CONTEXT)/starter-rhel-atomic starter-rhel-atomic/	
 	@if docker images $(CONTEXT)/starter-rhel-atomic:$(VERSION); then touch ${OUTPUT_DIR}/starter-rhel-atomic.o; fi
-
 ${OUTPUT_DIR}/starter-ansible.o: starter-ansible/*
 	@mkdir -p ${OUTPUT_DIR}
 	docker build --pull -t $(CONTEXT)/starter-ansible:$(VERSION) -t $(CONTEXT)/starter-ansible starter-ansible/	
@@ -41,7 +41,7 @@ ${OUTPUT_DIR}/starter-arbitrary-uid.o: starter-arbitrary-uid/*
 
 ${OUTPUT_DIR}/starter-scratch.o: starter-scratch/*
 	@mkdir -p ${OUTPUT_DIR}
-	docker run --rm -tiv ${PWD}/starter-scratch:${BDIR}:z registry.access.redhat.com/rhel7 bash -c "chmod u+x ${BDIR}/build.sh; ${BDIR}/build.sh"
+	docker run --rm -tiv ${PWD}/starter-scratch:${BDIR}:z registry.access.redhat.com/rhel7 bash -c "chmod u+x ${BDIR}/build.sh; ${BDIR}/build.sh ${GO_BUILD}"
 	docker build --pull -t $(CONTEXT)/starter-scratch:$(VERSION) -t $(CONTEXT)/starter-scratch starter-scratch/	
 	@if docker images $(CONTEXT)/starter-scratch:$(VERSION); then touch ${OUTPUT_DIR}/starter-scratch.o; fi
 
@@ -70,9 +70,8 @@ ${OUTPUT_DIR}/starter-nsswrapper.o: starter-nsswrapper/*
 
 clean:
 	rm -r ${OUTPUT_DIR}/ \
-	starter-scratch/*.go \
 	starter-scratch/*.1 \
-	starter-scratch/outyet
+	starter-scratch/main
 
 #tag_production:
 #	docker tag $(BUILD_NAME_001):latest $(BUILD_NAME_001):production
