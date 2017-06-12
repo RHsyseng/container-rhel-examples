@@ -1,14 +1,12 @@
 CONTEXT = acme
-USERNAME = ""
-PASSWORD = ""
 VERSION = v3.2
-REGISTRY = 10.0.1.1
-REGISTRY_SERVER = 172.30.93.229:5000
 OUTPUT_DIR = o
+DIRS = starter-scratch
 
 all: build
-build: starter starter-rhel-atomic  starter-ansible  starter-arbitrary-uid  starter-systemd  starter-epel  starter-api  starter-nsswrapper
+build: starter  starter-rhel-atomic  starter-ansible  starter-arbitrary-uid  starter-scratch  starter-systemd  starter-epel  starter-api  starter-nsswrapper
 starter: ${OUTPUT_DIR}/starter.o
+starter-scratch: starter-scratch/build
 starter-rhel-atomic: ${OUTPUT_DIR}/starter-rhel-atomic.o
 starter-ansible: ${OUTPUT_DIR}/starter-ansible.o
 starter-arbitrary-uid: ${OUTPUT_DIR}/starter-arbitrary-uid.o
@@ -17,10 +15,14 @@ starter-epel: ${OUTPUT_DIR}/starter-epel.o
 starter-api: ${OUTPUT_DIR}/starter-api.o
 starter-nsswrapper: ${OUTPUT_DIR}/starter-nsswrapper.o
 
+
 ${OUTPUT_DIR}/starter.o: starter/*
 	@mkdir -p ${OUTPUT_DIR}
 	docker build --pull -t $(CONTEXT)/starter:$(VERSION) -t $(CONTEXT)/starter starter/	
 	@if docker images $(CONTEXT)/starter:$(VERSION); then touch ${OUTPUT_DIR}/starter.o; fi
+
+starter-scratch/build:
+	cd starter-scratch/; make
 
 ${OUTPUT_DIR}/starter-rhel-atomic.o: starter-rhel-atomic/*
 	@mkdir -p ${OUTPUT_DIR}
@@ -57,18 +59,6 @@ ${OUTPUT_DIR}/starter-nsswrapper.o: starter-nsswrapper/*
 	docker build --pull -t $(CONTEXT)/starter-nsswrapper:$(VERSION) -t $(CONTEXT)/starter-nsswrapper starter-nsswrapper/	
 	@if docker images $(CONTEXT)/starter-nsswrapper:$(VERSION); then touch ${OUTPUT_DIR}/starter-nsswrapper.o; fi
 
-#test:
-#	env NAME=$(NAME) VERSION=$(VERSION) ./test.sh
-
 clean:
-	rm -r ${OUTPUT_DIR}/
-
-#tag_production:
-#	docker tag $(BUILD_NAME_001):latest $(BUILD_NAME_001):production
-#	docker tag $(CONTEXT)/$(BUILD_NAME_001):$(VERSION) $(REGISTRY_SERVER)/$(CONTEXT)/$(BUILD_NAME_001):$(VERSION)
-
-#tag_registry:
-#	docker tag $(BUILD_NAME_001) $(REGISTRY_SERVER)/$(BUILD_NAME_001)
-
-#push:
-#	atomic push -u $(USERNAME) -p $(PASSWORD) $(REGISTRY_SERVER)/$(BUILD_NAME_001):latest
+	rm -rf ${OUTPUT_DIR}/
+	for d in $(DIRS); do (cd $$d; make clean ); done
