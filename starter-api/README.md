@@ -23,5 +23,5 @@ http://developers.redhat.com/products/cdk/overview/
 
 Once your host is setup you can begin your Dockerfile with this example. This will ensure you're using the supported/secure base image instead of one you might find on docker's public hub, and many other benefits discussed in the best practices link above.
 ```shell
-$ docker build --pull -t acme/starter-api -t acme/starter-api:v3.2 .
+$ make
 ```

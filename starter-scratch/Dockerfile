@@ -17,5 +17,8 @@ LABEL name="acme/starter-scratch" \
       io.openshift.expose-services="8080:http" \
       io.openshift.tags="acme,starter,scratch"
 
+####### Add app-specific needs below. #######
 ADD main help.1 /
+### Containers should NOT run as root as a good practice
+USER 10001
 CMD ["/main"]
