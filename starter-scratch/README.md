@@ -23,7 +23,6 @@ http://developers.redhat.com/products/cdk/overview/
 
 Once your host is setup you can begin your Dockerfile with this example.
 ```shell
-$ cd starter-scratch/
 $ make
 $ docker run -tdip 8080:8080 acme/starter-scratch
 # OR
