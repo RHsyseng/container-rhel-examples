@@ -31,6 +31,6 @@ RUN chmod -R ug+x ${APP_ROOT}/bin /tmp/user_setup && \
 
 ####### Add app-specific needs below. #######
 ### Containers should NOT run as root as a good practice
-USER ${USER_UID}
+USER 10001
 WORKDIR ${APP_ROOT}
 CMD run

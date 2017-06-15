@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/RHsyseng/container-rhel-examples.svg?branch=master)](https://travis-ci.org/RHsyseng/container-rhel-examples)
+
 build on rhel7
 ```shell
 $ make
