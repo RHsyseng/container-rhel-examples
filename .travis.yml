@@ -4,6 +4,7 @@ dist: trusty
 env:
   - VARIANT=starter
   - VARIANT=starter-arbitrary-uid
+  - VARIANT=starter-systemd
 
 services:
  - docker
