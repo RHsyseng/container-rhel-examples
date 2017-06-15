@@ -1,0 +1,36 @@
+### docker build --pull -t acme/starter:centos7 -f Dockerfile.centos7 .
+FROM docker.io/centos:7
+MAINTAINER Red Hat Systems Engineering <refarch-feedback@redhat.com>
+
+### Atomic/OpenShift Labels - https://github.com/projectatomic/ContainerApplicationGenericLabels
+LABEL name="acme/starter" \
+      vendor="Acme Corp" \
+      version="3.2" \
+      release="1" \
+### Required labels above - recommended below
+      url="https://www.acme.io" \
+      summary="Acme Corp's Starter app" \
+      description="Starter app will do ....." \
+      run='docker run -tdi --name ${NAME} ${IMAGE}' \
+      io.k8s.description="Starter app will do ....." \
+      io.k8s.display-name="Starter app" \
+      io.openshift.expose-services="" \
+      io.openshift.tags="acme,starter"
+
+COPY user_setup /tmp/
+
+### Setup user for build execution and application runtime
+ENV APP_ROOT=/opt/app-root \
+    USER_NAME=default \
+    USER_UID=10001
+ENV APP_HOME=${APP_ROOT}/src  PATH=$PATH:${APP_ROOT}/bin
+RUN mkdir -p ${APP_HOME}
+COPY bin/ ${APP_ROOT}/bin/
+RUN chmod -R ug+x ${APP_ROOT}/bin /tmp/user_setup && \
+    /tmp/user_setup
+
+####### Add app-specific needs below. #######
+### Containers should NOT run as root as a good practice
+USER ${USER_UID}
+WORKDIR ${APP_ROOT}
+CMD run

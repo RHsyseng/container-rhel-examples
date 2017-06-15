@@ -1,0 +1,23 @@
+sudo: required
+dist: trusty
+
+env:
+  - VARIANT=starter
+  - VARIANT=starter-arbitrary-uid
+
+services:
+ - docker
+
+addons:
+  apt:
+    packages:
+    - nodejs
+
+install:
+  - npm install -g dockerfile_lint
+
+before_script:
+  - dockerfile_lint -f ${VARIANT}/Dockerfile -f ${VARIANT}/Dockerfile.centos7
+
+script:
+  - make -C ${VARIANT} TARGET=centos7
