@@ -1,4 +1,3 @@
-### docker build --pull -t acme/starter-systemd -t acme/starter-systemd:v3.2 .
 FROM registry.access.redhat.com/rhel7-init
 MAINTAINER Red Hat Systems Engineering <refarch-feedback@redhat.com>
 

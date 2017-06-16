@@ -1,4 +1,3 @@
-### docker build --pull -t acme/starter-api -t acme/starter-api:v3.2 .
 FROM registry.access.redhat.com/rhel7
 MAINTAINER Red Hat Systems Engineering <refarch-feedback@redhat.com>
 
@@ -48,6 +47,6 @@ RUN chmod -R ug+x ${APP_ROOT}/bin /tmp/user_setup && \
 
 ####### Add app-specific needs below. #######
 ### Containers should NOT run as root as a good practice
-USER ${USER_UID}
+USER 10001
 WORKDIR ${APP_ROOT}
 CMD run

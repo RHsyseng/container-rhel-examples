@@ -1,13 +1,8 @@
 DIRS = \
-starter \
-starter-arbitrary-uid \
-starter-rhel-atomic \
-starter-epel \
-starter-systemd \
-starter-nsswrapper \
-starter-api \
-starter-scratch \
-starter-ansible
+jre \
+sdk \
+oracle-jre \
+oracle-jdk
 
 # Allow user to pass in OS build options
 ifeq ($(TARGET),centos7)

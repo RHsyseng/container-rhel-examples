@@ -1,7 +1,13 @@
 #!/bin/sh
 set -x
 cd $(dirname $(readlink -f $0))
-yum -y install --disablerepo "*" --enablerepo rhel-7-server-rpms,rhel-7-server-optional-rpms golang git golang-github-cpuguy83-go-md2man
+
+if [ -L /etc/redhat-release ]; then
+    yum -y install golang git golang-github-cpuguy83-go-md2man
+else
+    yum -y install --disablerepo "*" --enablerepo rhel-7-server-rpms,rhel-7-server-optional-rpms golang git golang-github-cpuguy83-go-md2man
+fi
+
 GO_BUILD=$1
 export GOPATH=${HOME}/go
 go get -d ${GO_BUILD}

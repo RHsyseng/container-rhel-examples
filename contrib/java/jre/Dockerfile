@@ -1,4 +1,3 @@
-### docker build --pull -t rhel7/java:jre8 .
 FROM registry.access.redhat.com/rhel7
 MAINTAINER Red Hat Systems Engineering <refarch-feedback@redhat.com>
 
@@ -7,11 +6,11 @@ ENV LANG en_US.utf8
 ### Set the JAVA_HOME variable to make it clear where Java is located
 ENV JAVA_HOME /usr/lib/jvm/jre
 
-RUN yum clean all && \
-    yum-config-manager --disable \* &> /dev/null && \
-    yum-config-manager --enable rhel-7-server-rpms &> /dev/null && \
-    yum -y update-minimal --security --sec-severity=Important --sec-severity=Critical --setopt=tsflags=nodocs && \
-    yum -y install --setopt=tsflags=nodocs java-1.8.0-openjdk && \
+### Add necessary Red Hat repos here
+RUN REPOLIST=rhel-7-server-rpms \
+### Add your package needs here
+    INSTALL_PKGS="java-1.8.0-openjdk" && \
+    yum -y install --disablerepo "*" --enablerepo ${REPOLIST} --setopt=tsflags=nodocs ${INSTALL_PKGS} && \
     yum clean all
 
 ENV APP_ROOT=/opt/app-root \
@@ -25,5 +24,5 @@ RUN mkdir -p ${HOME}/bin ${APP_ROOT}/bin && \
     chown -R ${USER_UID}:0 /opt/app-root
 
 ### Containers should NOT run as root as a best practice
-USER ${USER_UID}
+USER 10001
 WORKDIR ${HOME}

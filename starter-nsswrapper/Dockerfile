@@ -1,4 +1,3 @@
-### docker build --pull -t acme/starter-nsswrapper -t acme/starter-nsswrapper:v3.2 .
 FROM registry.access.redhat.com/rhel7
 MAINTAINER Red Hat Systems Engineering <refarch-feedback@redhat.com>
 
@@ -48,7 +47,7 @@ RUN chmod -R ug+x ${APP_ROOT}/bin ${APP_ROOT}/etc /tmp/user_setup && \
 
 ####### Add app-specific needs below. #######
 ### Containers should NOT run as root as a good practice
-USER ${USER_UID}
+USER 10001
 WORKDIR ${APP_ROOT}
 ### NSS_WRAPPER for arbitrary uid recognition - for OpenShift deployments
 RUN sed "s@${USER_NAME}:x:${USER_UID}:0@${USER_NAME}:x:\${USER_ID}:\${GROUP_ID}@g" /etc/passwd > ${APP_ROOT}/etc/passwd.template

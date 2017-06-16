@@ -2,21 +2,29 @@ FROM docker.io/centos:7
 MAINTAINER Red Hat Systems Engineering <refarch-feedback@redhat.com>
 
 ### Atomic/OpenShift Labels - https://github.com/projectatomic/ContainerApplicationGenericLabels
-LABEL name="acme/starter" \
+LABEL name="acme/starter-api" \
       vendor="Acme Corp" \
       version="3.2" \
       release="1" \
 ### Required labels above - recommended below
       url="https://www.acme.io" \
-      summary="Acme Corp's Starter app" \
-      description="Starter app will do ....." \
+      summary="Acme Corp's starter-api app" \
+      description="starter-api app will do ....." \
       run='docker run -tdi --name ${NAME} ${IMAGE}' \
-      io.k8s.description="Starter app will do ....." \
-      io.k8s.display-name="Starter app" \
+      io.k8s.description="starter-api app will do ....." \
+      io.k8s.display-name="starter-api app" \
       io.openshift.expose-services="" \
-      io.openshift.tags="acme,starter"
+      io.openshift.tags="acme,starter-api,starter,api"
 
 COPY user_setup /tmp/
+
+### Add your package needs here
+RUN INSTALL_PKGS="iputils \
+      bind-utils \
+      jq" && \
+    yum -y install epel-release && \
+    yum -y install --setopt=tsflags=nodocs ${INSTALL_PKGS} && \
+    yum clean all
 
 ### Setup user for build execution and application runtime
 ENV APP_ROOT=/opt/app-root \
@@ -25,7 +33,7 @@ ENV APP_ROOT=/opt/app-root \
 ENV APP_HOME=${APP_ROOT}/src  PATH=$PATH:${APP_ROOT}/bin
 RUN mkdir -p ${APP_HOME}
 COPY bin/ ${APP_ROOT}/bin/
-RUN chmod -R ug+x ${APP_ROOT}/bin /tmp/user_setup && sync && \
+RUN chmod -R ug+x ${APP_ROOT}/bin /tmp/user_setup && \
     /tmp/user_setup
 
 ####### Add app-specific needs below. #######

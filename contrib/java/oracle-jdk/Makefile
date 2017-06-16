@@ -1,6 +1,6 @@
 CONTEXT = acme
 VERSION = v3.2
-IMAGE_NAME = starter-epel
+IMAGE_NAME = oracle-jdk
 
 # Allow user to pass in OS build options
 ifeq ($(TARGET),centos7)

@@ -1,4 +1,3 @@
-### docker build --pull -t acme/starter-rhel-atomic -t acme/starter-rhel-atomic:v3.2 .
 FROM registry.access.redhat.com/rhel-atomic
 MAINTAINER Red Hat Systems Engineering <refarch-feedback@redhat.com>
 

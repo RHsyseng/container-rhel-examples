@@ -1,4 +1,3 @@
-### docker build --pull -t acme/starter-scratch -t acme/starter-scratch:v3.2 .
 FROM scratch
 MAINTAINER Red Hat Systems Engineering <refarch-feedback@redhat.com>
 
