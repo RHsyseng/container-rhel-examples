@@ -9,8 +9,8 @@ env:
   - VARIANT=starter-nsswrapper TARGET=centos7
   - VARIANT=starter-api TARGET=centos7
   - VARIANT=starter-scratch TARGET=centos7
-  - VARIANT=contrib/java/jre TARGET=centos7
-  - VARIANT=contrib/java/sdk TARGET=centos7
+#  - VARIANT=contrib/java/jre TARGET=centos7
+#  - VARIANT=contrib/java/sdk TARGET=centos7
 
 services:
  - docker
@@ -24,7 +24,7 @@ install:
   - npm install -g dockerfile_lint
 
 before_script:
-  - dockerfile_lint -f ${VARIANT}/Dockerfile -f ${VARIANT}/Dockerfile.${TARGET}
+  - if [ -f ${VARIANT}/Dockerfile ]; then; dockerfile_lint -f ${VARIANT}/Dockerfile -f ${VARIANT}/Dockerfile.${TARGET}; else; dockerfile_lint -f ${VARIANT}/Dockerfile.${TARGET}; fi
 
 script:
   - make -C ${VARIANT} TARGET=${TARGET}
