@@ -40,7 +40,7 @@ ENV APP_ROOT=/opt/app-root \
 ENV APP_HOME=${APP_ROOT}/src  PATH=$PATH:${APP_ROOT}/bin
 RUN mkdir -p ${APP_HOME}
 COPY bin/ ${APP_ROOT}/bin/
-RUN chmod -R ug+x ${APP_ROOT}/bin /tmp/user_setup && \
+RUN chmod -R ug+x ${APP_ROOT}/bin /tmp/user_setup && sync && \
     /tmp/user_setup
 
 ####### Add app-specific needs below. #######
