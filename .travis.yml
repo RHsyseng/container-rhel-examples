@@ -2,16 +2,15 @@ sudo: required
 dist: trusty
 
 env:
-  - LINT="dockerfile_lint -f ${VARIANT}/Dockerfile"
-  - VARIANT=starter TARGET=centos7 LINT_CMD="${LINT} -f ${VARIANT}/Dockerfile.${TARGET}"
-  - VARIANT=starter-arbitrary-uid TARGET=centos7 LINT_CMD="${LINT} -f ${VARIANT}/Dockerfile.${TARGET}"
-  - VARIANT=starter-epel TARGET=centos7 LINT_CMD="${LINT} -f ${VARIANT}/Dockerfile.${TARGET}"
-  - VARIANT=starter-systemd TARGET=centos7 LINT_CMD="${LINT} -f ${VARIANT}/Dockerfile.${TARGET} -f ${VARIANT}/Dockerfile.arbuid -f ${VARIANT}/Dockerfile.arbuid.${TARGET} -f ${VARIANT}/Dockerfile.w-postgresql"
-  - VARIANT=starter-nsswrapper TARGET=centos7 LINT_CMD="${LINT} -f ${VARIANT}/Dockerfile.${TARGET}"
-  - VARIANT=starter-api TARGET=centos7 LINT_CMD="${LINT} -f ${VARIANT}/Dockerfile.${TARGET}"
-  - VARIANT=starter-scratch TARGET=centos7 LINT_CMD="${LINT}"
-  - VARIANT=contrib/java/jre TARGET=centos7 LINT_CMD="${LINT} -f ${VARIANT}/Dockerfile.${TARGET}"
-  - VARIANT=contrib/java/sdk TARGET=centos7 LINT_CMD="${LINT} -f ${VARIANT}/Dockerfile.${TARGET}"
+  - VARIANT=starter TARGET=centos7 LINT_CMD="dockerfile_lint -f ${VARIANT}/Dockerfile -f ${VARIANT}/Dockerfile.${TARGET}"
+  - VARIANT=starter-arbitrary-uid TARGET=centos7 LINT_CMD="dockerfile_lint -f ${VARIANT}/Dockerfile -f ${VARIANT}/Dockerfile.${TARGET}"
+  - VARIANT=starter-epel TARGET=centos7 LINT_CMD="dockerfile_lint -f ${VARIANT}/Dockerfile -f ${VARIANT}/Dockerfile.${TARGET}"
+  - VARIANT=starter-systemd TARGET=centos7 LINT_CMD="dockerfile_lint -f ${VARIANT}/Dockerfile -f ${VARIANT}/Dockerfile.${TARGET} -f ${VARIANT}/Dockerfile.arbuid -f ${VARIANT}/Dockerfile.arbuid.${TARGET} -f ${VARIANT}/Dockerfile.w-postgresql"
+  - VARIANT=starter-nsswrapper TARGET=centos7 LINT_CMD="dockerfile_lint -f ${VARIANT}/Dockerfile -f ${VARIANT}/Dockerfile.${TARGET}"
+  - VARIANT=starter-api TARGET=centos7 LINT_CMD="dockerfile_lint -f ${VARIANT}/Dockerfile -f ${VARIANT}/Dockerfile.${TARGET}"
+  - VARIANT=starter-scratch TARGET=centos7 LINT_CMD="dockerfile_lint -f ${VARIANT}/Dockerfile"
+  - VARIANT=contrib/java/jre TARGET=centos7 LINT_CMD="dockerfile_lint -f ${VARIANT}/Dockerfile -f ${VARIANT}/Dockerfile.${TARGET}"
+  - VARIANT=contrib/java/sdk TARGET=centos7 LINT_CMD="dockerfile_lint -f ${VARIANT}/Dockerfile -f ${VARIANT}/Dockerfile.${TARGET}"
 
 services:
  - docker
