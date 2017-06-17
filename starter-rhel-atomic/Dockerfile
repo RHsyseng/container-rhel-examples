@@ -6,10 +6,10 @@ LABEL name="acme/starter-rhel-atomic" \
       vendor="Acme Corp" \
       version="3.2" \
       release="1" \
-### Required labels above - recommended below
-      url="https://www.acme.io" \
       summary="Acme Corp's Starter app" \
       description="Starter app will do ....." \
+### Required labels above - recommended below
+      url="https://www.acme.io" \
       run='docker run -tdi --name ${NAME} ${IMAGE}' \
       io.k8s.description="Starter app will do ....." \
       io.k8s.display-name="Starter app" \

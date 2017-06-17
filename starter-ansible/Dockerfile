@@ -17,10 +17,10 @@ LABEL name="acme/starter-ansible" \
       vendor="Acme Corp" \
       version="3.2" \
       release="1" \
-### Required labels above - recommended below
-      url="https://www.acme.io" \
       summary="Acme Corp's starter-ansible app" \
       description="starter-ansible app will do ....." \
+### Required labels above - recommended below
+      url="https://www.acme.io" \
       run='docker run -tdi --name ${NAME} ${IMAGE}' \
       io.k8s.description="starter-ansible app will do ....." \
       io.k8s.display-name="starter-ansible app" \

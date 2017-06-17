@@ -5,7 +5,7 @@ MAINTAINER Red Hat Systems Engineering <refarch-feedback@redhat.com>
 LABEL name="acme/sdk" \
       vendor="Acme Corp" \
       version="3.2" \
-      release="1" \
+      release="1"
 
 ### Default to UTF-8 file.encoding
 ENV LANG en_US.utf8

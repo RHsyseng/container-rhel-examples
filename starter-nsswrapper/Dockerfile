@@ -6,10 +6,10 @@ LABEL name="acme/starter-nsswrapper" \
       vendor="Acme Corp" \
       version="3.2" \
       release="1" \
-### Required labels above - recommended below
-      url="https://www.acme.io" \
       summary="Acme Corp's Starter app" \
       description="Starter app will do ....." \
+### Required labels above - recommended below
+      url="https://www.acme.io" \
       run='docker run -tdi --name ${NAME} \
       -u 123456 \
       ${IMAGE}' \

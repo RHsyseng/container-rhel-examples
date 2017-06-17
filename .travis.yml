@@ -2,15 +2,15 @@ sudo: required
 dist: trusty
 
 env:
-  - VARIANT=starter TARGET=centos7 EXTRA_LINT_FILES="-f ${VARIANT}/Dockerfile"
-  - VARIANT=starter-arbitrary-uid TARGET=centos7 EXTRA_LINT_FILES="-f ${VARIANT}/Dockerfile"
-  - VARIANT=starter-epel TARGET=centos7 EXTRA_LINT_FILES="-f ${VARIANT}/Dockerfile"
-  - VARIANT=starter-systemd TARGET=centos7 EXTRA_LINT_FILES="-f ${VARIANT}/Dockerfile"
-  - VARIANT=starter-nsswrapper TARGET=centos7 EXTRA_LINT_FILES="-f ${VARIANT}/Dockerfile"
-  - VARIANT=starter-api TARGET=centos7 EXTRA_LINT_FILES="-f ${VARIANT}/Dockerfile"
+  - VARIANT=starter TARGET=centos7 EXTRA_LINT_FILES="-f ${VARIANT}/Dockerfile.${TARGET}"
+  - VARIANT=starter-arbitrary-uid TARGET=centos7 EXTRA_LINT_FILES="-f ${VARIANT}/Dockerfile.${TARGET}"
+  - VARIANT=starter-epel TARGET=centos7 EXTRA_LINT_FILES="-f ${VARIANT}/Dockerfile.${TARGET}"
+  - VARIANT=starter-systemd TARGET=centos7 EXTRA_LINT_FILES="-f ${VARIANT}/Dockerfile.${TARGET} -f ${VARIANT}/Dockerfile.arbuid -f ${VARIANT}/Dockerfile.arbuid.${TARGET} -f ${VARIANT}/Dockerfile.w-postgresql"
+  - VARIANT=starter-nsswrapper TARGET=centos7 EXTRA_LINT_FILES="-f ${VARIANT}/Dockerfile.${TARGET}"
+  - VARIANT=starter-api TARGET=centos7 EXTRA_LINT_FILES="-f ${VARIANT}/Dockerfile.${TARGET}"
   - VARIANT=starter-scratch TARGET=centos7
-  - VARIANT=contrib/java/jre TARGET=centos7 EXTRA_LINT_FILES="-f ${VARIANT}/Dockerfile"
-  - VARIANT=contrib/java/sdk TARGET=centos7 EXTRA_LINT_FILES="-f ${VARIANT}/Dockerfile"
+  - VARIANT=contrib/java/jre TARGET=centos7 EXTRA_LINT_FILES="-f ${VARIANT}/Dockerfile.${TARGET}"
+  - VARIANT=contrib/java/sdk TARGET=centos7 EXTRA_LINT_FILES="-f ${VARIANT}/Dockerfile.${TARGET}"
 
 services:
  - docker
@@ -24,7 +24,7 @@ install:
   - npm install -g dockerfile_lint
 
 before_script:
-  - dockerfile_lint -f ${VARIANT}/Dockerfile.${TARGET} ${EXTRA_LINT_FILES}
+  - dockerfile_lint -f ${VARIANT}/Dockerfile ${EXTRA_LINT_FILES}
 
 script:
   - make -C ${VARIANT} TARGET=${TARGET}

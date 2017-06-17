@@ -6,10 +6,10 @@ LABEL name="acme/starter-epel" \
       vendor="Acme Corp" \
       version="3.2" \
       release="1" \
-### Required labels above - recommended below
-      url="https://www.acme.io" \
       summary="Acme Corp's starter-epel app" \
       description="starter-epel app will do ....." \
+### Required labels above - recommended below
+      url="https://www.acme.io" \
       run='docker run -tdi --name ${NAME} ${IMAGE}' \
       io.k8s.description="starter-epel app will do ....." \
       io.k8s.display-name="starter-epel app" \
