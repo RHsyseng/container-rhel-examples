@@ -2,15 +2,15 @@ sudo: required
 dist: trusty
 
 env:
-  - VARIANT=starter TARGET=centos7
-  - VARIANT=starter-arbitrary-uid TARGET=centos7
-  - VARIANT=starter-epel TARGET=centos7
-  - VARIANT=starter-systemd TARGET=centos7
-  - VARIANT=starter-nsswrapper TARGET=centos7
-  - VARIANT=starter-api TARGET=centos7
+  - VARIANT=starter TARGET=centos7 EXTRA_LINT_FILES="-f ${VARIANT}/Dockerfile"
+  - VARIANT=starter-arbitrary-uid TARGET=centos7 EXTRA_LINT_FILES="-f ${VARIANT}/Dockerfile"
+  - VARIANT=starter-epel TARGET=centos7 EXTRA_LINT_FILES="-f ${VARIANT}/Dockerfile"
+  - VARIANT=starter-systemd TARGET=centos7 EXTRA_LINT_FILES="-f ${VARIANT}/Dockerfile"
+  - VARIANT=starter-nsswrapper TARGET=centos7 EXTRA_LINT_FILES="-f ${VARIANT}/Dockerfile"
+  - VARIANT=starter-api TARGET=centos7 EXTRA_LINT_FILES="-f ${VARIANT}/Dockerfile"
   - VARIANT=starter-scratch TARGET=centos7
-  - VARIANT=contrib/java/jre TARGET=centos7
-  - VARIANT=contrib/java/sdk TARGET=centos7
+  - VARIANT=contrib/java/jre TARGET=centos7 EXTRA_LINT_FILES="-f ${VARIANT}/Dockerfile"
+  - VARIANT=contrib/java/sdk TARGET=centos7 EXTRA_LINT_FILES="-f ${VARIANT}/Dockerfile"
 
 services:
  - docker
@@ -24,8 +24,7 @@ install:
   - npm install -g dockerfile_lint
 
 before_script:
-  - chmod u+x lint_wrapper.sh
-  - ./lint_wrapper.sh ${VARIANT}
+  - dockerfile_lint -f ${VARIANT}/Dockerfile.${TARGET} ${EXTRA_LINT_FILES}
 
 script:
   - make -C ${VARIANT} TARGET=${TARGET}

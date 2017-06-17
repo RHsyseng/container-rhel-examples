@@ -1,6 +1,12 @@
 FROM registry.access.redhat.com/rhel7
 MAINTAINER Red Hat Systems Engineering <refarch-feedback@redhat.com>
 
+### Atomic/OpenShift Labels - https://github.com/projectatomic/ContainerApplicationGenericLabels
+LABEL name="acme/jre" \
+      vendor="Acme Corp" \
+      version="3.2" \
+      release="1" \
+
 ### Default to UTF-8 file.encoding
 ENV LANG en_US.utf8
 ### Set the JAVA_HOME variable to make it clear where Java is located
