@@ -18,5 +18,14 @@ build:
 lint:
 	dockerfile_lint -f Dockerfile
 
+test:
+	$(eval CONTAINERID=$(shell docker run -tdi -u $(shell shuf -i 1000010000-1000020000 -n 1) ${CONTEXT}/${IMAGE_NAME}:${TARGET}-${VERSION}))
+	@sleep 5
+	@docker exec ${CONTAINERID} ps aux
+	@docker rm -f ${CONTAINERID}
+
+run:
+	docker run -tdi -u $(shell shuf -i 1000010000-1000020000 -n 1) ${CONTEXT}/${IMAGE_NAME}:${TARGET}-${VERSION}
+
 clean:
 	rm -f build

@@ -24,5 +24,8 @@ build:
 lint:
 	@for d in ${DIRS}; do ${MAKE} lint -C $$d; done
 
+test:
+	@for d in ${DIRS}; do ${MAKE} test -C $$d; done
+
 clean:
 	@for d in ${DIRS}; do ${MAKE} clean -C $$d; done
