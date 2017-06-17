@@ -2,7 +2,7 @@ FROM docker.io/centos:7
 MAINTAINER Red Hat Systems Engineering <refarch-feedback@redhat.com>
 
 ### Atomic/OpenShift Labels - https://github.com/projectatomic/ContainerApplicationGenericLabels
-LABEL name="acme/starter-arbitrary-uid" \
+LABEL name="acme/starter-nsswrapper" \
       vendor="Acme Corp" \
       version="3.2" \
       release="1" \
@@ -16,9 +16,17 @@ LABEL name="acme/starter-arbitrary-uid" \
       io.k8s.description="Starter app will do ....." \
       io.k8s.display-name="Starter app" \
       io.openshift.expose-services="" \
-      io.openshift.tags="acme,starter-arbitrary-uid,starter,arbitrary,uid"
+      io.openshift.tags="acme,starter-nsswrapper,starter,nsswrapper"
 
 COPY user_setup /tmp/
+
+### Add your package needs here
+RUN INSTALL_PKGS="golang-github-cpuguy83-go-md2man \
+      nss_wrapper \
+      gettext" && \
+    yum -y install epel-release && \
+    yum -y install --setopt=tsflags=nodocs ${INSTALL_PKGS} && \
+    yum clean all
 
 ### Setup user for build execution and application runtime
 ENV APP_ROOT=/opt/app-root \
@@ -34,7 +42,7 @@ RUN chmod -R ug+x ${APP_ROOT}/bin ${APP_ROOT}/etc /tmp/user_setup && sync && \
 ### Containers should NOT run as root as a good practice
 USER 10001
 WORKDIR ${APP_ROOT}
-### arbitrary uid recognition at runtime - for OpenShift deployments
-RUN sed "s@${USER_NAME}:x:${USER_UID}:@${USER_NAME}:x:\${USER_ID}:@g" /etc/passwd > ${APP_ROOT}/etc/passwd.template
-ENTRYPOINT [ "uid_entrypoint" ]
+### NSS_WRAPPER for arbitrary uid recognition - for OpenShift deployments
+RUN sed "s@${USER_NAME}:x:${USER_UID}:0@${USER_NAME}:x:\${USER_ID}:\${GROUP_ID}@g" /etc/passwd > ${APP_ROOT}/etc/passwd.template
+ENTRYPOINT [ "nss_entrypoint" ]
 CMD run

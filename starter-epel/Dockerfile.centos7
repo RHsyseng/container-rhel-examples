@@ -2,39 +2,40 @@ FROM docker.io/centos:7
 MAINTAINER Red Hat Systems Engineering <refarch-feedback@redhat.com>
 
 ### Atomic/OpenShift Labels - https://github.com/projectatomic/ContainerApplicationGenericLabels
-LABEL name="acme/starter-arbitrary-uid" \
+LABEL name="acme/starter-epel" \
       vendor="Acme Corp" \
       version="3.2" \
       release="1" \
-      summary="Acme Corp's Starter app" \
-      description="Starter app will do ....." \
+      summary="Acme Corp's starter-epel app" \
+      description="starter-epel app will do ....." \
 ### Required labels above - recommended below
       url="https://www.acme.io" \
-      run='docker run -tdi --name ${NAME} \
-      -u 123456 \
-      ${IMAGE}' \
-      io.k8s.description="Starter app will do ....." \
-      io.k8s.display-name="Starter app" \
+      run='docker run -tdi --name ${NAME} ${IMAGE}' \
+      io.k8s.description="starter-epel app will do ....." \
+      io.k8s.display-name="starter-epel app" \
       io.openshift.expose-services="" \
-      io.openshift.tags="acme,starter-arbitrary-uid,starter,arbitrary,uid"
+      io.openshift.tags="acme,starter-epel,starter,epel"
 
 COPY user_setup /tmp/
+
+### Add your package needs here
+RUN INSTALL_PKGS="jq" && \
+    yum -y install epel-release && \
+    yum -y install --setopt=tsflags=nodocs ${INSTALL_PKGS} && \
+    yum clean all
 
 ### Setup user for build execution and application runtime
 ENV APP_ROOT=/opt/app-root \
     USER_NAME=default \
     USER_UID=10001
 ENV APP_HOME=${APP_ROOT}/src  PATH=$PATH:${APP_ROOT}/bin
-RUN mkdir -p ${APP_HOME} ${APP_ROOT}/etc
+RUN mkdir -p ${APP_HOME}
 COPY bin/ ${APP_ROOT}/bin/
-RUN chmod -R ug+x ${APP_ROOT}/bin ${APP_ROOT}/etc /tmp/user_setup && sync && \
+RUN chmod -R ug+x ${APP_ROOT}/bin /tmp/user_setup && sync && \
     /tmp/user_setup
 
 ####### Add app-specific needs below. #######
 ### Containers should NOT run as root as a good practice
 USER 10001
 WORKDIR ${APP_ROOT}
-### arbitrary uid recognition at runtime - for OpenShift deployments
-RUN sed "s@${USER_NAME}:x:${USER_UID}:@${USER_NAME}:x:\${USER_ID}:@g" /etc/passwd > ${APP_ROOT}/etc/passwd.template
-ENTRYPOINT [ "uid_entrypoint" ]
 CMD run

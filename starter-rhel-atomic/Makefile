@@ -2,10 +2,21 @@ CONTEXT = acme
 VERSION = v3.2
 IMAGE_NAME = starter-rhel-atomic
 
+# Allow user to pass in OS build options
+ifeq ($(TARGET),centos7)
+	DFILE := Dockerfile.${TARGET}
+else
+	TARGET := rhel7
+	DFILE := Dockerfile
+endif
+
 all: build
 build:
-	docker build --pull -t ${CONTEXT}/${IMAGE_NAME}:${VERSION} -t ${CONTEXT}/${IMAGE_NAME} .
-	@if docker images ${CONTEXT}/${IMAGE_NAME}:${VERSION}; then touch build; fi
+	docker build --pull -t ${CONTEXT}/${IMAGE_NAME}:${TARGET}-${VERSION} -t ${CONTEXT}/${IMAGE_NAME} -f ${DFILE} .
+	@if docker images ${CONTEXT}/${IMAGE_NAME}:${TARGET}-${VERSION}; then touch build; fi
+
+lint:
+	dockerfile_lint -f Dockerfile
 
 clean:
 	rm -f build

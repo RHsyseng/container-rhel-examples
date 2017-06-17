@@ -1,4 +1,3 @@
-### docker build --pull -t acme/starter-systemd -t acme/starter-systemd:v3.2 .
 FROM registry.access.redhat.com/rhel7-init
 MAINTAINER Red Hat Systems Engineering <refarch-feedback@redhat.com>
 
@@ -7,10 +6,10 @@ LABEL name="acme/starter-systemd" \
       vendor="Acme Corp" \
       version="3.2" \
       release="1" \
-### Required labels above - recommended below
-      url="https://www.acme.io" \
       summary="Acme Corp's Starter app" \
       description="Starter app will do ....." \
+### Required labels above - recommended below
+      url="https://www.acme.io" \
       run='docker run -tdi --name ${NAME} \
       -p 8080:80 \
       ${IMAGE}' \

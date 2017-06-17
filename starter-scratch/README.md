@@ -23,7 +23,15 @@ http://developers.redhat.com/products/cdk/overview/
 
 Once your host is setup you can begin your Dockerfile with this example.
 ```shell
+# build on rhel7
 $ make
+
+# OR
+
+# build on centos7
+$ make TARGET=centos7
+```
+```shell
 $ docker run -tdip 8080:8080 acme/starter-scratch
 # OR
 # atomic run acme/starter-scratch

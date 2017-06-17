@@ -2,9 +2,15 @@ sudo: required
 dist: trusty
 
 env:
-  - VARIANT=starter
-  - VARIANT=starter-arbitrary-uid
-  - VARIANT=starter-systemd
+  - VARIANT=starter TARGET=centos7
+  - VARIANT=starter-arbitrary-uid TARGET=centos7
+  - VARIANT=starter-epel TARGET=centos7
+  - VARIANT=starter-systemd TARGET=centos7
+  - VARIANT=starter-nsswrapper TARGET=centos7
+  - VARIANT=starter-api TARGET=centos7
+  - VARIANT=starter-scratch TARGET=centos7
+  - VARIANT=contrib/java/jre TARGET=centos7
+  - VARIANT=contrib/java/sdk TARGET=centos7
 
 services:
  - docker
@@ -18,7 +24,7 @@ install:
   - npm install -g dockerfile_lint
 
 before_script:
-  - dockerfile_lint -f ${VARIANT}/Dockerfile -f ${VARIANT}/Dockerfile.centos7
+  - make lint -C ${VARIANT}
 
 script:
-  - make -C ${VARIANT} TARGET=centos7
+  - make -C ${VARIANT} TARGET=${TARGET}

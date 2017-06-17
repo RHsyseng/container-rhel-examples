@@ -1,6 +1,6 @@
 CONTEXT = acme
 VERSION = v3.2
-IMAGE_NAME = starter-arbitrary-uid
+IMAGE_NAME = sdk
 
 # Allow user to pass in OS build options
 ifeq ($(TARGET),centos7)

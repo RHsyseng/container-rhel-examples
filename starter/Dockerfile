@@ -1,4 +1,3 @@
-### docker build --pull -t acme/starter -t acme/starter:v3.2 .
 FROM registry.access.redhat.com/rhel7
 MAINTAINER Red Hat Systems Engineering <refarch-feedback@redhat.com>
 
@@ -7,10 +6,10 @@ LABEL name="acme/starter" \
       vendor="Acme Corp" \
       version="3.2" \
       release="1" \
-### Required labels above - recommended below
-      url="https://www.acme.io" \
       summary="Acme Corp's Starter app" \
       description="Starter app will do ....." \
+### Required labels above - recommended below
+      url="https://www.acme.io" \
       run='docker run -tdi --name ${NAME} ${IMAGE}' \
       io.k8s.description="Starter app will do ....." \
       io.k8s.display-name="Starter app" \
@@ -20,6 +19,9 @@ LABEL name="acme/starter" \
 ### Atomic Help File - Write in Markdown, it will be converted to man format at build time.
 ### https://github.com/projectatomic/container-best-practices/blob/master/creating/help.adoc
 COPY help.md user_setup /tmp/
+
+### add licenses to this directory
+COPY licenses /licenses
 
 ### Add necessary Red Hat repos here
 RUN REPOLIST=rhel-7-server-rpms,rhel-7-server-optional-rpms \

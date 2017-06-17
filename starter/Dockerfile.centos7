@@ -1,4 +1,3 @@
-### docker build --pull -t acme/starter:centos7 -f Dockerfile.centos7 .
 FROM docker.io/centos:7
 MAINTAINER Red Hat Systems Engineering <refarch-feedback@redhat.com>
 
@@ -7,10 +6,10 @@ LABEL name="acme/starter" \
       vendor="Acme Corp" \
       version="3.2" \
       release="1" \
-### Required labels above - recommended below
-      url="https://www.acme.io" \
       summary="Acme Corp's Starter app" \
       description="Starter app will do ....." \
+### Required labels above - recommended below
+      url="https://www.acme.io" \
       run='docker run -tdi --name ${NAME} ${IMAGE}' \
       io.k8s.description="Starter app will do ....." \
       io.k8s.display-name="Starter app" \
