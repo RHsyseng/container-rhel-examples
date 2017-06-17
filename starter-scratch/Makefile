@@ -18,7 +18,7 @@ build:
 	@if docker images ${CONTEXT}/${IMAGE_NAME}:${VERSION}; then touch build; fi
 
 lint:
-    dockerfile_lint -f Dockerfile
+	dockerfile_lint -f Dockerfile
 
 clean:
 	rm -f help.1 main build
