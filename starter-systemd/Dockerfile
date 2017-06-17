@@ -1,6 +1,8 @@
 FROM registry.access.redhat.com/rhel7-init
 MAINTAINER Red Hat Systems Engineering <refarch-feedback@redhat.com>
 
+EXPOSE 80
+
 ### Atomic/OpenShift Labels - https://github.com/projectatomic/ContainerApplicationGenericLabels
 LABEL name="acme/starter-systemd" \
       vendor="Acme Corp" \

@@ -1,6 +1,8 @@
 FROM scratch
 MAINTAINER Red Hat Systems Engineering <refarch-feedback@redhat.com>
 
+EXPOSE 8080
+
 ### Atomic/OpenShift Labels - https://github.com/projectatomic/ContainerApplicationGenericLabels
 LABEL name="acme/starter-scratch" \
       vendor="Acme Corp" \
