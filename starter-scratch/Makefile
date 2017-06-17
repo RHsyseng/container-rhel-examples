@@ -17,5 +17,8 @@ build:
 	docker build --pull -t ${CONTEXT}/${IMAGE_NAME}:${VERSION} -t ${CONTEXT}/${IMAGE_NAME} .
 	@if docker images ${CONTEXT}/${IMAGE_NAME}:${VERSION}; then touch build; fi
 
+lint:
+    dockerfile_lint -f Dockerfile
+
 clean:
 	rm -f help.1 main build

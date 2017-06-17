@@ -21,5 +21,8 @@ all: build
 build: 
 	@for d in ${DIRS}; do ${MAKE} -C $$d TARGET=${TARGET}; done
 
+lint:
+	@for d in ${DIRS}; do ${MAKE} lint -C $$d; done
+
 clean:
 	@for d in ${DIRS}; do ${MAKE} clean -C $$d; done
