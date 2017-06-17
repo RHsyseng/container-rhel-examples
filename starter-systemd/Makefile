@@ -22,5 +22,15 @@ lint:
 	dockerfile_lint -f Dockerfile.arbuid.centos7
 	dockerfile_lint -f Dockerfile.w-postgresql
 
+test:
+	$(eval CONTAINERID=$(shell docker run -tdi -v /sys/fs/cgroup:/sys/fs/cgroup:ro --tmpfs /run --tmpfs /tmp ${CONTEXT}/${IMAGE_NAME}:${TARGET}-${VERSION}))
+	@sleep 5
+	@docker exec ${CONTAINERID} curl localhost
+	@docker exec ${CONTAINERID} systemctl status
+	@docker rm -f ${CONTAINERID}
+
+run:
+	docker run -tdi -p 8080:80 -v /sys/fs/cgroup:/sys/fs/cgroup:ro --tmpfs /run --tmpfs /tmp ${CONTEXT}/${IMAGE_NAME}:${TARGET}-${VERSION}
+
 clean:
 	rm -f build

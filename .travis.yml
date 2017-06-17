@@ -28,3 +28,4 @@ before_script:
 
 script:
   - make -C ${VARIANT} TARGET=${TARGET}
+  - make test -C ${VARIANT} TARGET=${TARGET}
