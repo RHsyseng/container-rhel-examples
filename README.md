@@ -1,42 +1,56 @@
 [![Build Status](https://travis-ci.org/RHsyseng/container-rhel-examples.svg?branch=master)](https://travis-ci.org/RHsyseng/container-rhel-examples)
 
-
-## Lint
-#### lint your Dockerfiles
+## Getting started
+### Build
+#### build rhel7 images
 ```shell
-$ make lint
-```
-
-## Build
-#### build on rhel7
-```shell
+# build many
 $ make
 
 # or build one
 $ make -C starter
 ```
 
-#### build on centos7
+#### build centos7 images
 ```shell
+# build many
 $ make TARGET=centos7
 
 # or build one
 $ make -C starter TARGET=centos7
 ```
-
-## Test
-#### test on rhel7
+### Run
+#### run a built rhel7 image
 ```shell
-$ make test
-
-# or test one
-$ make test -C starter
+$ make run -C starter
 ```
 
-#### test on centos7
+#### run a built centos7 image
 ```shell
+$ make run -C starter TARGET=centos7
+```
+## Optional
+### Lint
+#### lint your Dockerfiles
+```shell
+$ yum -y install nodejs
+$ npm install -g dockerfile_lint
+$ make lint
+```
+### Test
+#### rhel7
+```shell
+# test many images
+$ make test
+
+# or test one image
+$ make test -C starter
+```
+#### centos7
+```shell
+# test many images
 $ make test TARGET=centos7
 
-# or test one
+# or test one image
 $ make test -C starter TARGET=centos7
 ```

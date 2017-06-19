@@ -21,7 +21,7 @@ lint:
 test:
 	$(eval CONTAINERID=$(shell docker run -tdi -u $(shell shuf -i 1000010000-1000020000 -n 1) ${CONTEXT}/${IMAGE_NAME}:${TARGET}-${VERSION}))
 	@sleep 3
-	@docker exec ${CONTAINERID} ps aux
+	@docker exec ${CONTAINERID} env
 	@docker rm -f ${CONTAINERID}
 
 run:
