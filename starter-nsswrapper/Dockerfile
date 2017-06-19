@@ -49,7 +49,7 @@ RUN chmod -R ug+x ${APP_ROOT}/bin ${APP_ROOT}/etc /tmp/user_setup && sync && \
 ### Containers should NOT run as root as a good practice
 USER 10001
 WORKDIR ${APP_ROOT}
-### NSS_WRAPPER for arbitrary uid recognition - for OpenShift deployments
+### NSS_WRAPPER for user name recognition at runtime w/ an arbitrary uid - for OpenShift deployments
 RUN sed "s@${USER_NAME}:x:${USER_UID}:0@${USER_NAME}:x:\${USER_ID}:\${GROUP_ID}@g" /etc/passwd > ${APP_ROOT}/etc/passwd.template
 ENTRYPOINT [ "nss_entrypoint" ]
 CMD run

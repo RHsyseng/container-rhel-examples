@@ -24,7 +24,7 @@ lint:
 
 test:
 	$(eval CONTAINERID=$(shell docker run -tdi -u $(shell shuf -i 1000010000-1000020000 -n 1) ${CONTEXT}/${IMAGE_NAME}:${TARGET}-${VERSION}))
-	@sleep 5
+	@sleep 3
 	@docker exec ${CONTAINERID} nss_entrypoint whoami
 	@docker rm -f ${CONTAINERID}
 

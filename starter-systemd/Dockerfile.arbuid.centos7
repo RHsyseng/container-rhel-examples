@@ -51,12 +51,13 @@ RUN MASK_JOBS="sys-fs-fuse-connections.mount getty.target systemd-initctl.socket
     systemctl enable httpd crond && \
     /tmp/systemd_setup
 
+### user name recognition at runtime w/ an arbitrary uid - for OpenShift deployments
+RUN sed "s@${USER_NAME}:x:${USER_UID}:@${USER_NAME}:x:\${USER_ID}:@g" /etc/passwd > /etc/passwd.template
+
 ### Containers should NOT run as root as a good practice
 USER 10001
 WORKDIR ${APP_ROOT}
 
 VOLUME /var/log/httpd /tmp /run
 
-### arbitrary uid recognition at runtime - for OpenShift deployments
-RUN sed "s@${USER_NAME}:x:${USER_UID}:@${USER_NAME}:x:\${USER_ID}:@g" /etc/passwd > ${APP_ROOT}/etc/passwd.template
 CMD [ "/sbin/init" ]
