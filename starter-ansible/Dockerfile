@@ -72,6 +72,6 @@ RUN yum -y install --disablerepo "*" \
 # Containers should NOT run as root as a good practice.
 # -----------------------------------------------
 
-USER ${USER_UID}
+USER 10001
 WORKDIR ${APP_ROOT}
 CMD run

@@ -53,6 +53,6 @@ RUN chown -R ${USER_UID}:0 ${APP_ROOT} && \
 
 ####### Add app-specific needs below. #######
 ### Containers should NOT run as root as a good practice
-USER ${USER_UID}
+USER 99
 WORKDIR ${APP_ROOT}
 CMD run

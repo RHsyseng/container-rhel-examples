@@ -27,7 +27,7 @@ lint:
 
 test:
 	$(eval CONTAINERID=$(shell docker run -tdi -v /sys/fs/cgroup:/sys/fs/cgroup:ro --tmpfs /run --tmpfs /tmp ${CONTEXT}/${IMAGE_NAME}:${TARGET}-${VERSION}))
-	@sleep 5
+	@sleep 3
 	@docker exec ${CONTAINERID} curl localhost
 	@docker exec ${CONTAINERID} systemctl status
 	@docker rm -f ${CONTAINERID}
