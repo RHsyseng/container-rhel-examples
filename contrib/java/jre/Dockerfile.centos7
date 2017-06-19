@@ -29,3 +29,4 @@ RUN mkdir -p ${HOME}/bin ${APP_ROOT}/bin && \
 ### Containers should NOT run as root as a best practice
 USER 10001
 WORKDIR ${HOME}
+CMD sleep 30

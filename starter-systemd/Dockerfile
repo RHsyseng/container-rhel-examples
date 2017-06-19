@@ -17,7 +17,7 @@ LABEL name="acme/starter-systemd" \
       ${IMAGE}' \
       io.k8s.description="Starter app will do ....." \
       io.k8s.display-name="Starter app" \
-      io.openshift.expose-services="8080:http" \
+      io.openshift.expose-services="http" \
       io.openshift.tags="acme,starter-systemd,starter,systemd"
 
 ### Atomic Help File - Write in Markdown, it will be converted to man format at build time.
@@ -36,6 +36,8 @@ RUN REPOLIST=rhel-7-server-rpms,rhel-7-server-optional-rpms \
 ### help file markdown to man conversion
     go-md2man -in /tmp/help.md -out /help.1 && \
     yum clean all
+
+VOLUME /var/log/httpd /tmp /run
 
 ### systemd requirements
 RUN systemctl enable httpd crond

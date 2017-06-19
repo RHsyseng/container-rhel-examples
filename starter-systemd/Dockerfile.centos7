@@ -17,7 +17,7 @@ LABEL name="acme/starter-systemd" \
       ${IMAGE}' \
       io.k8s.description="Starter app will do ....." \
       io.k8s.display-name="Starter app" \
-      io.openshift.expose-services="8080:http" \
+      io.openshift.expose-services="http" \
       io.openshift.tags="acme,starter-systemd,starter,systemd"
 
 RUN yum -y update-minimal --security --sec-severity=Important --sec-severity=Critical --setopt=tsflags=nodocs && \
@@ -35,5 +35,7 @@ RUN MASK_JOBS="sys-fs-fuse-connections.mount getty.target systemd-initctl.socket
     rm -f /etc/fstab && \
     systemctl set-default multi-user.target && \
     systemctl enable httpd crond
+
+VOLUME /var/log/httpd /tmp /run
 
 CMD [ "/sbin/init" ]

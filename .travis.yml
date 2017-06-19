@@ -19,13 +19,30 @@ addons:
   apt:
     packages:
     - nodejs
+    - jq
 
 install:
   - npm install -g dockerfile_lint
 
 before_script:
-  - make lint -C ${VARIANT}
+  - mkdir $HOME/bin
+  - export PATH=$PATH:$HOME/bin
+  - tmp=`mktemp`
+  - echo 'DOCKER_OPTS="$DOCKER_OPTS --insecure-registry 172.30.0.0/16"' > ${tmp}
+  - sudo mv ${tmp} /etc/default/docker
+  - sudo mount --make-shared /
+  - sudo service docker restart
 
 script:
+  - make lint -C ${VARIANT}
   - make -C ${VARIANT} TARGET=${TARGET}
   - make test -C ${VARIANT} TARGET=${TARGET}
+  - wget `curl -s https://api.github.com/repos/openshift/origin/releases/latest | jq -r ".assets[] | select(.name | test(\"linux-64bit\")) | .browser_download_url" | grep -i client-tools`
+  - tar xvfz `ls openshift-origin-client-tools-*.tar.gz` --strip-components=1 -C $HOME/bin
+  - oc cluster up
+  - export OC_USER=`oc whoami` OC_PASS=`oc whoami -t`
+  - oc login -u system:admin
+  - oc rollout status -w dc/docker-registry -n default || oc rollout retry dc/docker-registry -n default && oc rollout status -w dc/docker-registry -n default
+  - export REGISTRY_IP=`oc get svc/docker-registry -o json -n default | jq -r '.spec.clusterIP'`
+  - make openshift-test -C ${VARIANT} TARGET=${TARGET} REGISTRY=${REGISTRY_IP} OC_USER=${OC_USER} OC_PASS=${OC_PASS}
+  - oc version

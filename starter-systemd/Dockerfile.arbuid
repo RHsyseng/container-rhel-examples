@@ -19,7 +19,7 @@ LABEL name="acme/starter-systemd" \
       ${IMAGE}' \
       io.k8s.description="Starter app will do ....." \
       io.k8s.display-name="Starter app" \
-      io.openshift.expose-services="8080:http" \
+      io.openshift.expose-services="http" \
       io.openshift.tags="acme,starter-systemd,starter,systemd"
 
 ### Atomic Help File - Write in Markdown, it will be converted to man format at build time.
@@ -60,5 +60,8 @@ RUN MASK_JOBS="sys-fs-fuse-connections.mount getty.target systemd-initctl.socket
 ### Containers should NOT run as root as a good practice
 USER 10001
 WORKDIR ${APP_ROOT}
+
+VOLUME /var/log/httpd /tmp /run
+
 ### arbitrary uid recognition at runtime - for OpenShift deployments
 RUN sed "s@${USER_NAME}:x:${USER_UID}:@${USER_NAME}:x:\${USER_ID}:@g" /etc/passwd > ${APP_ROOT}/etc/passwd.template
