@@ -41,7 +41,7 @@ openshift-test:
 	oc status
 	sleep 5
 	oc describe pod `oc get pod --template '{{(index .items 0).metadata.name }}'`
-	curl `oc get svc/${IMAGE_NAME} -o json | jq -r '.spec.clusterIP'`:`oc get svc/${IMAGE_NAME} -o json | jq -r '.spec.ports[].port'`
+	curl `oc get svc/${IMAGE_NAME} --template '{{.spec.clusterIP}}:{{index .spec.ports 0 "port"}}'`
 
 run:
 	docker run -tdi -u $(shell shuf -i 1000010000-1000020000 -n 1) -p 8080:8080 ${CONTEXT}/${IMAGE_NAME}:${VERSION}

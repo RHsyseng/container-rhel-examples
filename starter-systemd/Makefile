@@ -47,9 +47,8 @@ openshift-test:
 	oc rollout status -w dc/${IMAGE_NAME}
 	oc volume dc/${IMAGE_NAME} --add -t hostPath --path=/sys/fs/cgroup --mount-path=/sys/fs/cgroup
 	oc rollout status -w dc/${IMAGE_NAME}
-#	oc get pod -o json | jq -r --arg IMAGE_NAME ${IMAGE_NAME} --arg DC_VERSION `oc get dc/${IMAGE_NAME} -o json | jq -r '.status.latestVersion'` ".items[] | select(.metadata.labels.deployment==\"$IMAGE_NAME-$DC_VERSION\") | .metadata.name" > pod_name
 	oc describe pod ${IMAGE_NAME}-2-
-	curl `oc get svc/${IMAGE_NAME} -o json | jq -r '.spec.clusterIP'`:`oc get svc/${IMAGE_NAME} -o json | jq -r '.spec.ports[].port'`
+	curl `oc get svc/${IMAGE_NAME} --template '{{.spec.clusterIP}}:{{index .spec.ports 0 "port"}}'`
 	oc exec `oc describe pod ${IMAGE_NAME}-2- | grep ^Name\: | grep ${IMAGE_NAME}-2- | sed 's/^.*://g' | tr -d ' \t\n\r\f'` systemctl status
 
 run:
