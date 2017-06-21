@@ -1,5 +1,6 @@
 sudo: required
 dist: trusty
+group: deprecated-2017Q2
 
 env:
   - VARIANT=starter TARGET=centos7
@@ -15,11 +16,9 @@ env:
 services:
  - docker
 
-addons:
-  apt:
-    packages:
-    - nodejs
-    - jq
+before_install:
+  - sudo apt-get -qq update
+  - sudo apt-get install -y nodejs jq
 
 install:
   - npm install -g dockerfile_lint
@@ -28,13 +27,13 @@ before_script:
   - mkdir $HOME/bin
   - export PATH=$PATH:$HOME/bin
   - tmp=`mktemp`
-  - echo 'DOCKER_OPTS="$DOCKER_OPTS --insecure-registry 172.30.0.0/16"' > ${tmp}
-  - sudo mv ${tmp} /etc/default/docker
+  - echo '{"insecure-registries":["172.30.0.0/16"]}' > ${tmp}
+  - sudo mv ${tmp} /etc/docker/daemon.json
   - sudo mount --make-shared /
   - sudo service docker restart
+  - make lint -C ${VARIANT}
 
 script:
-  - make lint -C ${VARIANT}
   - make -C ${VARIANT} TARGET=${TARGET}
   - make test -C ${VARIANT} TARGET=${TARGET}
   - wget `curl -s https://api.github.com/repos/openshift/origin/releases/latest | jq -r ".assets[] | select(.name | test(\"linux-64bit\")) | .browser_download_url" | grep -i client-tools`
