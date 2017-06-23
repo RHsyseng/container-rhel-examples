@@ -23,6 +23,7 @@ install:
   - sudo apt-get -qq update
   - sudo apt-get install -y nodejs jq
   - npm install -g dockerfile_lint
+  - make lint -C ${VARIANT}
 
 before_script:
   - mkdir $HOME/bin
@@ -32,7 +33,6 @@ before_script:
   - sudo mv ${tmp} /etc/docker/daemon.json
   - sudo mount --make-shared /
   - sudo service docker restart
-  - make lint -C ${VARIANT}
 
 script:
   - make -C ${VARIANT} TARGET=${TARGET}
