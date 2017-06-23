@@ -17,10 +17,11 @@ services:
  - docker
 
 before_install:
-  - sudo apt-get -qq update
-  - sudo apt-get install -y nodejs jq
+  - git diff --name-only HEAD~1 | awk -F '/' '{print $1}' | grep -w ^${VARIANT}$
 
 install:
+  - sudo apt-get -qq update
+  - sudo apt-get install -y nodejs jq
   - npm install -g dockerfile_lint
 
 before_script:
