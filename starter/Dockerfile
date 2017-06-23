@@ -49,3 +49,4 @@ RUN chmod -R ug+x ${APP_ROOT}/bin /tmp/user_setup && sync && \
 USER 10001
 WORKDIR ${APP_ROOT}
 CMD run
+

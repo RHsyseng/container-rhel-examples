@@ -17,32 +17,32 @@ services:
  - docker
 
 before_install:
-  - git diff --name-only HEAD~1 | awk -F '/' '{print $1}' | grep -w ^${VARIANT}$
+  - export BUILD=`git diff --name-only HEAD~1 | awk -F '/' '{print $1}' | sort | grep -w ^${VARIANT}$`
+  - [ ${BUILD} ] && make lint -C ${VARIANT}
 
 install:
-  - sudo apt-get -qq update
-  - sudo apt-get install -y nodejs jq
-  - npm install -g dockerfile_lint
-  - make lint -C ${VARIANT}
+  - [ ${BUILD} ] && sudo apt-get -qq update
+  - [ ${BUILD} ] && sudo apt-get install -y nodejs jq
+  - [ ${BUILD} ] && npm install -g dockerfile_lint
 
 before_script:
-  - mkdir $HOME/bin
-  - export PATH=$PATH:$HOME/bin
-  - tmp=`mktemp`
-  - echo '{"insecure-registries":["172.30.0.0/16"]}' > ${tmp}
-  - sudo mv ${tmp} /etc/docker/daemon.json
-  - sudo mount --make-shared /
-  - sudo service docker restart
+  - [ ${BUILD} ] && mkdir $HOME/bin
+  - [ ${BUILD} ] && export PATH=$PATH:$HOME/bin
+  - [ ${BUILD} ] && tmp=`mktemp`
+  - [ ${BUILD} ] && echo '{"insecure-registries":["172.30.0.0/16"]}' > ${tmp}
+  - [ ${BUILD} ] && sudo mv ${tmp} /etc/docker/daemon.json
+  - [ ${BUILD} ] && sudo mount --make-shared /
+  - [ ${BUILD} ] && sudo service docker restart
 
 script:
-  - make -C ${VARIANT} TARGET=${TARGET}
-  - make test -C ${VARIANT} TARGET=${TARGET}
-  - wget `curl -s https://api.github.com/repos/openshift/origin/releases/latest | jq -r ".assets[] | select(.name | test(\"linux-64bit\")) | .browser_download_url" | grep -i client-tools`
-  - tar xvfz `ls openshift-origin-client-tools-*.tar.gz` --strip-components=1 -C $HOME/bin
-  - oc cluster up
-  - export OC_USER=`oc whoami` OC_PASS=`oc whoami -t`
-  - oc login -u system:admin
-  - oc rollout status -w dc/docker-registry -n default || oc rollout retry dc/docker-registry -n default && oc rollout status -w dc/docker-registry -n default
-  - export REGISTRY_IP=`oc get svc/docker-registry -o json -n default | jq -r '.spec.clusterIP'`
-  - make openshift-test -C ${VARIANT} TARGET=${TARGET} REGISTRY=${REGISTRY_IP} OC_USER=${OC_USER} OC_PASS=${OC_PASS}
-  - oc version
+  - [ ${BUILD} ] && make -C ${VARIANT} TARGET=${TARGET}
+  - [ ${BUILD} ] && make test -C ${VARIANT} TARGET=${TARGET}
+  - [ ${BUILD} ] && wget `curl -s https://api.github.com/repos/openshift/origin/releases/latest | jq -r ".assets[] | select(.name | test(\"linux-64bit\")) | .browser_download_url" | grep -i client-tools`
+  - [ ${BUILD} ] && tar xvfz `ls openshift-origin-client-tools-*.tar.gz` --strip-components=1 -C $HOME/bin
+  - [ ${BUILD} ] && oc cluster up
+  - [ ${BUILD} ] && export OC_USER=`oc whoami` OC_PASS=`oc whoami -t`
+  - [ ${BUILD} ] && oc login -u system:admin
+  - [ ${BUILD} ] && oc rollout status -w dc/docker-registry -n default || oc rollout retry dc/docker-registry -n default && oc rollout status -w dc/docker-registry -n default
+  - [ ${BUILD} ] && export REGISTRY_IP=`oc get svc/docker-registry -o json -n default | jq -r '.spec.clusterIP'`
+  - [ ${BUILD} ] && make openshift-test -C ${VARIANT} TARGET=${TARGET} REGISTRY=${REGISTRY_IP} OC_USER=${OC_USER} OC_PASS=${OC_PASS}
+  - [ ${BUILD} ] && oc version
