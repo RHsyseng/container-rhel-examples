@@ -10,8 +10,6 @@ env:
   - VARIANT=starter-nsswrapper TARGET=centos7
   - VARIANT=starter-api TARGET=centos7
   - VARIANT=starter-scratch TARGET=centos7
-  - VARIANT=contrib/java/jre TARGET=centos7
-  - VARIANT=contrib/java/sdk TARGET=centos7
 
 services:
  - docker
