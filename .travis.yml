@@ -15,7 +15,7 @@ services:
  - docker
 
 before_install:
-  - export BUILD=`git diff --name-only HEAD~1 | awk -F '/' '{print $1}' | sort | grep -w ^${VARIANT}$`
+  - export BUILD=`git diff --name-only HEAD~1 | awk -F '/' '{print $1}' | uniq | grep -w ^${VARIANT}$`
 
 install:
   - if [ ${BUILD} ]; then sudo apt-get -qq update; fi
