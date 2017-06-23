@@ -22,6 +22,9 @@ LABEL name="acme/starter-nsswrapper" \
 ### https://github.com/projectatomic/container-best-practices/blob/master/creating/help.adoc
 COPY help.md user_setup /tmp/
 
+### add licenses to this directory
+COPY licenses /licenses
+
 ### Add necessary Red Hat repos here
 RUN REPOLIST=rhel-7-server-rpms,rhel-7-server-optional-rpms,rhel-7-server-ose-3.5-rpms \
 ### Add your package needs here

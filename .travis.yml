@@ -41,6 +41,6 @@ script:
   - if [ ${BUILD} ]; then export OC_USER=`oc whoami` OC_PASS=`oc whoami -t`; fi
   - if [ ${BUILD} ]; then oc login -u system:admin; fi
   - if [ ${BUILD} ]; then oc rollout status -w dc/docker-registry -n default || oc rollout retry dc/docker-registry -n default && oc rollout status -w dc/docker-registry -n default; fi
-  - if [ ${BUILD} ]; then export REGISTRY_IP=`oc get svc/docker-registry -o json -n default | jq -r '.spec.clusterIP'`; fi
-  - if [ ${BUILD} ]; then make openshift-test -C ${VARIANT} TARGET=${TARGET} REGISTRY=${REGISTRY_IP} OC_USER=${OC_USER} OC_PASS=${OC_PASS}; fi
+  - if [ ${BUILD} ]; then export REGISTRY=`oc get svc/docker-registry -n default --template '{{.spec.clusterIP}}:{{index .spec.ports 0 "port"}}'`; fi
+  - if [ ${BUILD} ]; then make openshift-test -C ${VARIANT} TARGET=${TARGET} REGISTRY=${REGISTRY} OC_USER=${OC_USER} OC_PASS=${OC_PASS}; fi
   - if [ ${BUILD} ]; then oc version; fi
