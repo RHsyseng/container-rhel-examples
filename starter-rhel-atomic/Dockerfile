@@ -20,6 +20,9 @@ LABEL name="acme/starter-rhel-atomic" \
 ### https://github.com/projectatomic/container-best-practices/blob/master/creating/help.adoc
 COPY help.1 /
 
+### add licenses to this directory
+COPY licenses /licenses
+
 ### Setup user for build execution and application runtime
 ENV APP_ROOT=/opt/app-root \
     USER_NAME=nobody \

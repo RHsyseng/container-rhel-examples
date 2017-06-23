@@ -20,6 +20,10 @@ LABEL name="acme/starter-scratch" \
 
 ####### Add app-specific needs below. #######
 ADD main help.1 /
+
+### add licenses to this directory
+COPY licenses /licenses
+
 ### Containers should NOT run as root as a good practice
 USER 10001
 CMD ["/main"]
