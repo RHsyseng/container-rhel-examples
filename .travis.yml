@@ -18,12 +18,12 @@ services:
 
 before_install:
   - export BUILD=`git diff --name-only HEAD~1 | awk -F '/' '{print $1}' | sort | grep -w ^${VARIANT}$`
-  - if [ ${BUILD} ]; then make lint -C ${VARIANT}; fi
 
 install:
   - if [ ${BUILD} ]; then sudo apt-get -qq update; fi
   - if [ ${BUILD} ]; then sudo apt-get install -y nodejs jq; fi
   - if [ ${BUILD} ]; then npm install -g dockerfile_lint; fi
+  - if [ ${BUILD} ]; then make lint -C ${VARIANT}; fi
 
 before_script:
   - if [ ${BUILD} ]; then mkdir $HOME/bin; fi
