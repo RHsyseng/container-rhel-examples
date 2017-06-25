@@ -24,18 +24,24 @@ lint:
 	dockerfile_lint -f Dockerfile
 
 test:
-	$(eval CONTAINERID=$(shell docker run -tdi -u $(shell shuf -i 1000010000-1000020000 -n 1) -p 8080:8080 ${CONTEXT}/${IMAGE_NAME}:${VERSION}))
+	$(eval CONTAINERID=$(shell docker run -tdi -u $(shell shuf -i 1000010000-1000020000 -n 1) -p 8080:8080 \
+	--cap-drop=KILL \
+	--cap-drop=MKNOD \
+	--cap-drop=SYS_CHROOT \
+	--cap-drop=SETUID \
+	--cap-drop=SETGID \
+	${CONTEXT}/${IMAGE_NAME}:${VERSION}))
 	@sleep 3
 	@curl localhost:8080
 	@docker rm -f ${CONTAINERID}
 
 openshift-test:
-	$(eval PROJ_RANDOM=$(shell shuf -i 100000-999999 -n 1))
+	$(eval PROJ_RANDOM=test-$(shell shuf -i 100000-999999 -n 1))
 	oc login -u ${OC_USER} -p ${OC_PASS}
-	oc new-project test-${PROJ_RANDOM}
+	oc new-project ${PROJ_RANDOM}
 	docker login -u ${OC_USER} -p ${OC_PASS} ${REGISTRY}
-	docker tag ${CONTEXT}/${IMAGE_NAME}:${VERSION} ${REGISTRY}/test-${PROJ_RANDOM}/${IMAGE_NAME}
-	docker push ${REGISTRY}/test-${PROJ_RANDOM}/${IMAGE_NAME}
+	docker tag ${CONTEXT}/${IMAGE_NAME}:${VERSION} ${REGISTRY}/${PROJ_RANDOM}/${IMAGE_NAME}
+	docker push ${REGISTRY}/${PROJ_RANDOM}/${IMAGE_NAME}
 	oc new-app -i ${IMAGE_NAME}
 	oc rollout status -w dc/${IMAGE_NAME}
 	oc status
@@ -44,7 +50,13 @@ openshift-test:
 	curl `oc get svc/${IMAGE_NAME} --template '{{.spec.clusterIP}}:{{index .spec.ports 0 "port"}}'`
 
 run:
-	docker run -tdi -u $(shell shuf -i 1000010000-1000020000 -n 1) -p 8080:8080 ${CONTEXT}/${IMAGE_NAME}:${VERSION}
+	docker run -tdi -u $(shell shuf -i 1000010000-1000020000 -n 1) -p 8080:8080 \
+	--cap-drop=KILL \
+	--cap-drop=MKNOD \
+	--cap-drop=SYS_CHROOT \
+	--cap-drop=SETUID \
+	--cap-drop=SETGID \
+	${CONTEXT}/${IMAGE_NAME}:${VERSION}
 
 clean:
 	rm -f help.1 main build

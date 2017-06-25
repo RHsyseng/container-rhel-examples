@@ -31,6 +31,7 @@ test:
 	--cap-drop=SETGID \
 	${CONTEXT}/${IMAGE_NAME}:${TARGET}-${VERSION}))
 	@sleep 3
+	@docker exec ${CONTAINERID} ps aux
 	@docker exec ${CONTAINERID} whoami
 	@docker rm -f ${CONTAINERID}
 
