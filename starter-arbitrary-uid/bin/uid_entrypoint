@@ -1,6 +1,12 @@
 #!/bin/sh
-USER_ID=$(id -u)
-if [ ${USER_UID} != ${USER_ID} ]; then
+if [ -w /etc/passwd ]; then 
+  USER_ID=null
+  USER_ID=$(id -u)
+  id ${USER_ID} &> /dev/null
+  if [ $? -eq 0 ]; then
+    true
+  else
     sed "s@${USER_NAME}:x:\${USER_ID}:@${USER_NAME}:x:${USER_ID}:@g" /etc/passwd.template > /etc/passwd
+  fi
 fi
 exec "$@"
