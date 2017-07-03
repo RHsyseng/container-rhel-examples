@@ -16,8 +16,6 @@ LABEL name="acme/starter-epel" \
       io.openshift.expose-services="" \
       io.openshift.tags="acme,starter-epel,starter,epel"
 
-COPY user_setup /tmp/
-
 ### Add your package needs here
 RUN INSTALL_PKGS="jq" && \
     yum -y install epel-release && \
@@ -31,8 +29,10 @@ ENV APP_ROOT=/opt/app-root \
 ENV APP_HOME=${APP_ROOT}/src  PATH=$PATH:${APP_ROOT}/bin
 RUN mkdir -p ${APP_HOME}
 COPY bin/ ${APP_ROOT}/bin/
-RUN chmod -R ug+x ${APP_ROOT}/bin /tmp/user_setup && sync && \
-    /tmp/user_setup
+RUN chmod -R ug+x ${APP_ROOT}/bin && sync && \
+    useradd -l -u ${USER_UID} -r -g 0 -d ${APP_ROOT} -s /sbin/nologin -c "${USER_NAME} user" ${USER_NAME} && \
+    chown -R ${USER_UID}:0 ${APP_ROOT} && \
+    chmod -R g=u ${APP_ROOT}
 
 ####### Add app-specific needs below. #######
 ### Containers should NOT run as root as a good practice
