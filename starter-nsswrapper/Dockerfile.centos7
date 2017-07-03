@@ -19,8 +19,7 @@ LABEL name="acme/starter-nsswrapper" \
       io.openshift.tags="acme,starter-nsswrapper,starter,nsswrapper"
 
 ### Add your package needs here
-RUN INSTALL_PKGS="golang-github-cpuguy83-go-md2man \
-      nss_wrapper \
+RUN INSTALL_PKGS="nss_wrapper \
       gettext" && \
     yum -y install epel-release && \
     yum -y install --setopt=tsflags=nodocs ${INSTALL_PKGS} && \

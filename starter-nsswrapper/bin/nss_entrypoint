@@ -1,16 +1,8 @@
 #!/bin/sh
-if [ -w /etc/passwd ]; then 
-  USER_ID=null
-  export USER_ID=$(id -u)
-  export GROUP_ID=$(id -g)
-  id ${USER_ID} &> /dev/null
-  if [ $? -eq 0 ]; then
-    true
-  else
-    envsubst < ${APP_ROOT}/etc/passwd.template > ${APP_ROOT}/etc/passwd
-    export LD_PRELOAD=/usr/lib64/libnss_wrapper.so
-    export NSS_WRAPPER_PASSWD=${APP_ROOT}/etc/passwd
-    export NSS_WRAPPER_GROUP=/etc/group
-  fi
-fi
+export USER_ID=$(id -u)
+export GROUP_ID=$(id -g)
+envsubst < ${APP_ROOT}/etc/passwd.template > ${APP_ROOT}/etc/passwd
+export LD_PRELOAD=/usr/lib64/libnss_wrapper.so
+export NSS_WRAPPER_PASSWD=${APP_ROOT}/etc/passwd
+export NSS_WRAPPER_GROUP=/etc/group
 exec "$@"
