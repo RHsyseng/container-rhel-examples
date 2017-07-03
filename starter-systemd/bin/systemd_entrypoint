@@ -1,6 +1,5 @@
 #!/bin/sh
 if [ -w /etc/passwd ]; then 
-  USER_ID=null
   USER_ID=$(id -u)
   id ${USER_ID} &> /dev/null
   if [ $? -eq 0 ]; then
