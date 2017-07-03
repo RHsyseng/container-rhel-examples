@@ -20,7 +20,7 @@ LABEL name="acme/starter-arbitrary-uid" \
 
 ### Atomic Help File - Write in Markdown, it will be converted to man format at build time.
 ### https://github.com/projectatomic/container-best-practices/blob/master/creating/help.adoc
-COPY help.md user_setup /tmp/
+COPY help.md /tmp/
 
 ### add licenses to this directory
 COPY licenses /licenses
@@ -41,10 +41,12 @@ ENV APP_ROOT=/opt/app-root \
     USER_NAME=default \
     USER_UID=10001
 ENV APP_HOME=${APP_ROOT}/src  PATH=$PATH:${APP_ROOT}/bin
-RUN mkdir -p ${APP_HOME} ${APP_ROOT}/etc
+RUN mkdir -p ${APP_HOME}
 COPY bin/ ${APP_ROOT}/bin/
-RUN chmod -R ug+x ${APP_ROOT}/bin ${APP_ROOT}/etc /tmp/user_setup && sync && \
-    /tmp/user_setup
+RUN chmod -R ug+x ${APP_ROOT}/bin && sync && \
+    useradd -l -u ${USER_UID} -r -g 0 -d ${APP_ROOT} -s /sbin/nologin -c "${USER_NAME} application user" ${USER_NAME} && \
+    chown -R ${USER_UID}:0 ${APP_ROOT} && \
+    chmod -R g=u ${APP_ROOT} /etc/passwd
 
 ####### Add app-specific needs below. #######
 ### user name recognition at runtime w/ an arbitrary uid - for OpenShift deployments
