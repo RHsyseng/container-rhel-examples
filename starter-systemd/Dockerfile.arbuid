@@ -49,7 +49,7 @@ ENV APP_ROOT=/opt/app-root \
 ENV APP_HOME=${APP_ROOT}/src  PATH=$PATH:${APP_ROOT}/bin
 RUN mkdir -p ${APP_HOME}
 COPY bin/ ${APP_ROOT}/bin/
-RUN chmod -R ug+x ${APP_ROOT}/bin && sync && \
+RUN chmod -R ug+x ${APP_ROOT}/bin /tmp/systemd_setup && sync && \
     useradd -l -u ${USER_UID} -r -g 0 -d ${APP_ROOT} -s /sbin/nologin -c "${USER_NAME} user" ${USER_NAME} && \
     chown -R ${USER_UID}:0 ${APP_ROOT} && \
     chmod -R g=u ${APP_ROOT} /etc/passwd
