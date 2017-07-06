@@ -10,6 +10,7 @@ env:
   - VARIANT=starter-nsswrapper TARGET=centos7
   - VARIANT=starter-api TARGET=centos7
   - VARIANT=starter-scratch TARGET=centos7
+  - VARIANT=starter-sub-mgr TARGET=rhel7
 
 services:
  - docker
@@ -33,7 +34,7 @@ before_script:
   - if [ ${BUILD} ]; then sudo service docker restart; fi
 
 script:
-  - if [ ${BUILD} ]; then make -C ${VARIANT} TARGET=${TARGET}; fi
+  - if [ ${BUILD} ]; then make -C ${VARIANT} TARGET=${TARGET} SUB_UN=${SUB_UN} SUB_PW=${SUB_PW} POOL_ID=${POOL_ID}; fi
   - if [ ${BUILD} ]; then make test -C ${VARIANT} TARGET=${TARGET}; fi
   - if [ ${BUILD} ]; then wget `curl -s https://api.github.com/repos/openshift/origin/releases/latest | jq -r ".assets[] | select(.name | test(\"linux-64bit\")) | .browser_download_url" | grep -i client-tools`; fi
   - if [ ${BUILD} ]; then tar xvfz `ls openshift-origin-client-tools-*.tar.gz` --strip-components=1 -C $HOME/bin; fi
