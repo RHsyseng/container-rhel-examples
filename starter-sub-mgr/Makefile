@@ -1,6 +1,6 @@
 CONTEXT = acme
 VERSION = v3.2
-IMAGE_NAME = starter
+IMAGE_NAME = starter-sub-mgr
 REGISTRY = docker-registry.default.svc.cluster.local:5000
 OC_USER = developer
 OC_PASS = developer
