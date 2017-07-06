@@ -7,7 +7,6 @@ starter-systemd \
 starter-nsswrapper \
 starter-api \
 starter-scratch \
-starter-sub-mgr \
 starter-ansible
 
 # Allow user to pass in OS build options
