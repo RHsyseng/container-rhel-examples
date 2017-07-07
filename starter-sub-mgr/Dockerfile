@@ -27,7 +27,7 @@ COPY help.md /tmp/
 ### add licenses to this directory
 COPY licenses /licenses
 
-# remove rhsm-host symlink to trick sub-mgr & allow for registration
+# remove rhsm-host symlink to allow for use of subscription-manager
 RUN rm -f /etc/rhsm-host && \
     subscription-manager register --force --username "${SUB_UN}" --password "${SUB_PW}" && \
     subscription-manager attach --pool "${POOL_ID}" && \
