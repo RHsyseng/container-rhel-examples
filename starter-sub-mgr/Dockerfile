@@ -30,10 +30,9 @@ COPY licenses /licenses
 # remove rhsm-host symlink to trick sub-mgr & allow for registration
 RUN rm -f /etc/rhsm-host && \
     subscription-manager register --force --username "${SUB_UN}" --password "${SUB_PW}" && \
-    subscription-manager attach --pool "${POOL_ID}"
-
+    subscription-manager attach --pool "${POOL_ID}" && \
 ### Add necessary Red Hat repos here
-RUN REPOLIST=rhel-7-server-rpms,rhel-7-server-optional-rpms \
+    REPOLIST=rhel-7-server-rpms,rhel-7-server-optional-rpms \
 ### Add your package needs here
     INSTALL_PKGS="golang-github-cpuguy83-go-md2man" && \
     yum -y update-minimal --disablerepo "*" --enablerepo rhel-7-server-rpms --setopt=tsflags=nodocs \
