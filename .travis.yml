@@ -16,7 +16,7 @@ services:
  - docker
 
 before_install:
-  - if [ ${VARIANT} = "starter-sub-mgr" ] && [ ${TRAVIS_PULL_REQUEST} != "false" ]; then true; else export BUILD=`git diff --name-only HEAD~1 | awk -F '/' '{print $1}' | uniq | grep -w ^${VARIANT}$`; fi
+  - if [ ${TARGET} = "rhel7" ] && [ ${TRAVIS_PULL_REQUEST} != "false" ]; then true; else export BUILD=`git diff --name-only HEAD~1 | awk -F '/' '{print $1}' | uniq | grep -w ^${VARIANT}$`; fi
 
 install:
   - if [ ${BUILD} ]; then sudo apt-get -qq update; fi
