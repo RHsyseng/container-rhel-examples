@@ -1,9 +1,7 @@
 #!/bin/sh
-if [ -w /etc/passwd ]; then 
-  USER_ID=$(id -u)
-  id ${USER_ID} &> /dev/null
-  if [ $? -ne 0 ]; then
-    sed "s@${USER_NAME}:x:\${USER_ID}:@${USER_NAME}:x:${USER_ID}:@g" /etc/passwd.template > /etc/passwd
+if [ -w /etc/passwd ]; then
+  if ! whoami &> /dev/null; then
+    sed "s@${USER_NAME}:x:\${USER_ID}:@${USER_NAME}:x:$(id -u):@g" /etc/passwd.template > /etc/passwd
   fi
 fi
 exec "$@"
