@@ -32,4 +32,5 @@ RUN chmod -R ug+x ${APP_ROOT}/bin && sync && \
 ### Containers should NOT run as root as a good practice
 USER 10001
 WORKDIR ${APP_ROOT}
+VOLUME ${APP_ROOT}/logs ${APP_ROOT}/data
 CMD run

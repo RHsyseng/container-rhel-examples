@@ -55,4 +55,5 @@ ENTRYPOINT [ "uid_entrypoint" ]
 ### Containers should NOT run as root as a good practice
 USER 10001
 WORKDIR ${APP_ROOT}
+VOLUME ${APP_ROOT}/logs ${APP_ROOT}/data
 CMD run

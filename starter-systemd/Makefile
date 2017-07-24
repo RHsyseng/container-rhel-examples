@@ -26,14 +26,25 @@ lint:
 	dockerfile_lint -f Dockerfile.w-postgresql
 
 test:
-	$(eval CONTAINERID=$(shell docker run -tdi -v /sys/fs/cgroup:/sys/fs/cgroup:ro --tmpfs /run --tmpfs /tmp \
+	$(eval VOL_LIST=$(shell docker inspect -f '{{range $$p, $$vol := .Config.Volumes}} {{json $$p}} {{end}}' ${CONTEXT}/${IMAGE_NAME}:${TARGET}-${VERSION}))
+	$(eval TMPFS=$(shell for i in ${VOL_LIST}; do VOLS="$${VOLS} --tmpfs $${i}"; done; echo $${VOLS}))
+	$(eval CONTAINERID=$(shell docker run -tdi \
+	-v /sys/fs/cgroup:/sys/fs/cgroup:ro \
+	${TMPFS} \
 	--cap-drop=MKNOD \
 	--cap-drop=SYS_CHROOT \
 	${CONTEXT}/${IMAGE_NAME}:${TARGET}-${VERSION}))
 	@sleep 3
+	@echo ""
+	@echo "Check httpd..."
 	@docker exec ${CONTAINERID} curl localhost
+	@echo ""
+	@echo "Check systemd state..."
 	@docker exec ${CONTAINERID} systemctl status
-	@docker rm -f ${CONTAINERID}
+	@echo ""
+	@echo "Check volume(s)..."
+	@for i in ${VOL_LIST}; do docker exec ${CONTAINERID} mountpoint $${i}; docker exec ${CONTAINERID} mount | grep -w $${i} | grep tmpfs; echo; done
+	@docker rm -vf ${CONTAINERID}
 
 openshift-test:
 	$(eval PROJ_RANDOM=test-$(shell shuf -i 100000-999999 -n 1))
@@ -55,7 +66,11 @@ openshift-test:
 	oc exec `oc describe pod ${IMAGE_NAME}-2- | grep ^Name\: | grep ${IMAGE_NAME}-2- | sed 's/^.*://g' | tr -d ' \t\n\r\f'` systemctl status
 
 run:
-	docker run -tdi -p 8080:80 -v /sys/fs/cgroup:/sys/fs/cgroup:ro --tmpfs /run --tmpfs /tmp \
+	$(eval VOL_LIST=$(shell docker inspect -f '{{range $$p, $$vol := .Config.Volumes}} {{json $$p}} {{end}}' ${CONTEXT}/${IMAGE_NAME}:${TARGET}-${VERSION}))
+	$(eval TMPFS=$(shell for i in ${VOL_LIST}; do VOLS="$${VOLS} --tmpfs $${i}"; done; echo $${VOLS}))
+	docker run -tdi -p 8080:80 \
+	-v /sys/fs/cgroup:/sys/fs/cgroup:ro \
+	${TMPFS} \
 	--cap-drop=MKNOD \
 	--cap-drop=SYS_CHROOT \
 	${CONTEXT}/${IMAGE_NAME}:${TARGET}-${VERSION}
