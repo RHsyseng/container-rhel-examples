@@ -26,6 +26,7 @@ lint:
 	dockerfile_lint -f Dockerfile.w-postgresql
 
 test:
+#	OpenShift compatibility - prepare for mount of specified VOLUMEs in image
 	$(eval VOL_LIST=$(shell docker inspect -f '{{range $$p, $$vol := .Config.Volumes}} {{json $$p}} {{end}}' ${CONTEXT}/${IMAGE_NAME}:${TARGET}-${VERSION}))
 	$(eval TMPFS=$(shell for i in ${VOL_LIST}; do VOLS="$${VOLS} --tmpfs $${i}"; done; echo $${VOLS}))
 	$(eval CONTAINERID=$(shell docker run -tdi \
