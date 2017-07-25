@@ -55,3 +55,19 @@ $ make test TARGET=centos7
 # or test one image
 $ make test -C starter TARGET=centos7
 ```
+### OpenShift Test
+#### env setup
+```shell
+# login as an admin user to retrieve the registry url
+$ oc login -u system:admin
+$ REGISTRY=`oc get svc/docker-registry -n default --template '{{.spec.clusterIP}}:{{index .spec.ports 0 "port"}}'`
+# login as a regular user before executing any tests
+$ oc login -u developer -p developer
+```
+#### test an image in openshift
+```shell
+$ make openshift-test -C starter OC_USER=`oc whoami` OC_PASS=`oc whoami -t` REGISTRY=${REGISTRY}
+
+# or test a centos7 image
+$ make openshift-test -C starter TARGET=centos7 OC_USER=`oc whoami` OC_PASS=`oc whoami -t` REGISTRY=${REGISTRY}
+```
