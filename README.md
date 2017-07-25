@@ -58,7 +58,7 @@ $ make test -C starter TARGET=centos7
 ### OpenShift Test
 #### env setup
 ```shell
-# login as an admin user to retrieve the registry url
+# login as an admin user to retrieve the registry address
 $ oc login -u system:admin
 $ REGISTRY=`oc get svc/docker-registry -n default --template '{{.spec.clusterIP}}:{{index .spec.ports 0 "port"}}'`
 # login as a regular user before executing any tests
