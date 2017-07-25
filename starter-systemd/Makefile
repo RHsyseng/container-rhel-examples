@@ -52,12 +52,12 @@ openshift-test:
 	oc login -u ${OC_USER} -p ${OC_PASS}
 	oc new-project ${PROJ_RANDOM}
 	oc login -u system:admin
-	oc project ${PROJ_RANDOM}
+	oc patch scc hostmount-anyuid --patch '{"priority":1}'
+	oc adm policy add-scc-to-user hostmount-anyuid -z default
 	docker login -u ${OC_USER} -p ${OC_PASS} ${REGISTRY}
 	docker tag ${CONTEXT}/${IMAGE_NAME}:${TARGET}-${VERSION} ${REGISTRY}/${PROJ_RANDOM}/${IMAGE_NAME}
 	docker push ${REGISTRY}/${PROJ_RANDOM}/${IMAGE_NAME}
-	oc patch scc hostmount-anyuid --patch '{"priority":1}'
-	oc adm policy add-scc-to-user hostmount-anyuid -z default
+	oc login -u ${OC_USER} -p ${OC_PASS}
 	oc new-app -i ${IMAGE_NAME}
 	oc rollout status -w dc/${IMAGE_NAME}
 	oc volume dc/${IMAGE_NAME} --add -t hostPath --path=/sys/fs/cgroup --mount-path=/sys/fs/cgroup
