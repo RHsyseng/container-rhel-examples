@@ -28,7 +28,7 @@ lint:
 test:
 #	OpenShift compatibility - prepare for mount of specified VOLUMEs in image
 	$(eval VOL_LIST=$(shell docker inspect -f '{{range $$p, $$vol := .Config.Volumes}} {{json $$p}} {{end}}' ${CONTEXT}/${IMAGE_NAME}:${TARGET}-${VERSION}))
-	$(eval TMPFS=$(shell for i in ${VOL_LIST}; do VOLS="$${VOLS} --tmpfs $${i}"; done; echo $${VOLS}))
+	$(eval TMPFS=$(shell for i in ${VOL_LIST}; do VOLS="$${VOLS} --tmpfs $${i}:rw,suid,dev,exec,relatime,mode=2770"; done; echo $${VOLS}))
 	$(eval CONTAINERID=$(shell docker run -tdi \
 	-v /sys/fs/cgroup:/sys/fs/cgroup:ro \
 	${TMPFS} \
@@ -68,7 +68,7 @@ openshift-test:
 
 run:
 	$(eval VOL_LIST=$(shell docker inspect -f '{{range $$p, $$vol := .Config.Volumes}} {{json $$p}} {{end}}' ${CONTEXT}/${IMAGE_NAME}:${TARGET}-${VERSION}))
-	$(eval TMPFS=$(shell for i in ${VOL_LIST}; do VOLS="$${VOLS} --tmpfs $${i}"; done; echo $${VOLS}))
+	$(eval TMPFS=$(shell for i in ${VOL_LIST}; do VOLS="$${VOLS} --tmpfs $${i}:rw,suid,dev,exec,relatime,mode=2770"; done; echo $${VOLS}))
 	docker run -tdi -p 8080:80 \
 	-v /sys/fs/cgroup:/sys/fs/cgroup:ro \
 	${TMPFS} \
