@@ -37,22 +37,18 @@ RUN REPOLIST=rhel-7-server-rpms,rhel-7-server-optional-rpms \
     yum clean all
 
 ### Setup user for build execution and application runtime
-ENV APP_ROOT=/opt/app-root \
-    USER_NAME=default \
-    USER_UID=10001
-ENV APP_HOME=${APP_ROOT}/src  PATH=$PATH:${APP_ROOT}/bin
-RUN mkdir -p ${APP_HOME}
+ENV USER_NAME=default \
+    APP_ROOT=/opt/app-root
+ENV PATH=${APP_ROOT}/bin:${PATH}
 COPY bin/ ${APP_ROOT}/bin/
-RUN chmod -R ug+x ${APP_ROOT}/bin && sync && \
-    useradd -l -u ${USER_UID} -r -g 0 -d ${APP_ROOT} -s /sbin/nologin -c "${USER_NAME} user" ${USER_NAME} && \
-    chown -R ${USER_UID}:0 ${APP_ROOT} && \
+RUN chmod -R u+x ${APP_ROOT}/bin && \
+    chgrp -R 0 ${APP_ROOT} && \
     chmod -R g=u ${APP_ROOT} /etc/passwd
-
-####### Add app-specific needs below. #######
-### user name recognition at runtime w/ an arbitrary uid - for OpenShift deployments
-RUN sed "s@${USER_NAME}:x:${USER_UID}:@${USER_NAME}:x:\${USER_ID}:@g" /etc/passwd > /etc/passwd.template
-ENTRYPOINT [ "uid_entrypoint" ]
-### Containers should NOT run as root as a good practice
-USER 10001
 WORKDIR ${APP_ROOT}
+
+### Containers should NOT run as root as a good practice
+USER 1001
+
+### user name recognition at runtime w/ an arbitrary uid - for OpenShift deployments
+ENTRYPOINT [ "uid_entrypoint" ]
 CMD run

@@ -1,7 +1,7 @@
 #!/bin/sh
 if [ -w /etc/passwd ]; then
   if ! whoami &> /dev/null; then
-    sed "s@${USER_NAME}:x:\${USER_ID}:@${USER_NAME}:x:$(id -u):@g" /etc/passwd.template > /etc/passwd
+    echo "${USER_NAME}:x:$(id -u):0:${USER_NAME} user:${HOME}:/sbin/nologin" >> /etc/passwd
   fi
 fi
 exec "$@"
