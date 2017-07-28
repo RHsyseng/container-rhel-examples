@@ -19,8 +19,7 @@ LABEL name="acme/starter-arbitrary-uid" \
       io.openshift.tags="acme,starter-arbitrary-uid,starter,arbitrary,uid"
 
 ### Setup user for build execution and application runtime
-ENV USER_NAME=default \
-    APP_ROOT=/opt/app-root
+ENV APP_ROOT=/opt/app-root
 ENV PATH=${APP_ROOT}/bin:${PATH}
 COPY bin/ ${APP_ROOT}/bin/
 RUN chmod -R u+x ${APP_ROOT}/bin && sync && \

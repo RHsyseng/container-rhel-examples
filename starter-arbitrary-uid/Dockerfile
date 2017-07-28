@@ -37,8 +37,7 @@ RUN REPOLIST=rhel-7-server-rpms,rhel-7-server-optional-rpms \
     yum clean all
 
 ### Setup user for build execution and application runtime
-ENV USER_NAME=default \
-    APP_ROOT=/opt/app-root
+ENV APP_ROOT=/opt/app-root
 ENV PATH=${APP_ROOT}/bin:${PATH}
 COPY bin/ ${APP_ROOT}/bin/
 RUN chmod -R u+x ${APP_ROOT}/bin && \
