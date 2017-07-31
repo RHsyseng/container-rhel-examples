@@ -49,7 +49,7 @@ test:
 
 openshift-test:
 	$(eval PROJ_RANDOM=test-$(shell shuf -i 100000-999999 -n 1))
-	oc login -u ${OC_USER} -p ${OC_PASS}
+	oc login --token=${OC_PASS}
 	oc new-project ${PROJ_RANDOM}
 	oc login -u system:admin
 	oc patch scc hostmount-anyuid --patch '{"priority":1}'
@@ -57,7 +57,7 @@ openshift-test:
 	docker login -u ${OC_USER} -p ${OC_PASS} ${REGISTRY}
 	docker tag ${CONTEXT}/${IMAGE_NAME}:${TARGET}-${VERSION} ${REGISTRY}/${PROJ_RANDOM}/${IMAGE_NAME}
 	docker push ${REGISTRY}/${PROJ_RANDOM}/${IMAGE_NAME}
-	oc login -u ${OC_USER} -p ${OC_PASS}
+	oc login --token=${OC_PASS}
 	oc new-app -i ${IMAGE_NAME}
 	oc rollout status -w dc/${IMAGE_NAME}
 	oc volume dc/${IMAGE_NAME} --add -t hostPath --path=/sys/fs/cgroup --mount-path=/sys/fs/cgroup

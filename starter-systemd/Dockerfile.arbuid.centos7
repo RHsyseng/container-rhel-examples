@@ -32,7 +32,7 @@ COPY systemd_setup /tmp/
 ### Setup user for build execution and application runtime
 ENV USER_NAME=default \
     APP_ROOT=/opt/app-root
-ENV PATH=${APP_ROOT}/bin:${PATH}
+ENV PATH=${APP_ROOT}/bin:${PATH} HOME=${APP_ROOT}
 COPY bin/ ${APP_ROOT}/bin/
 RUN chmod -R u+x ${APP_ROOT}/bin /tmp/systemd_setup && sync && \
     chgrp -R 0 ${APP_ROOT} && \
@@ -51,7 +51,7 @@ RUN MASK_JOBS="sys-fs-fuse-connections.mount getty.target systemd-initctl.socket
     /tmp/systemd_setup
 
 ### Containers should NOT run as root as a good practice
-USER 1001
+USER 10001
 WORKDIR ${APP_ROOT}
 
 VOLUME /var/log/httpd /tmp /run

@@ -1,12 +1,11 @@
 sudo: required
 dist: trusty
-group: deprecated-2017Q2
 
 env:
   - VARIANT=starter TARGET=centos7
   - VARIANT=starter-arbitrary-uid TARGET=centos7
   - VARIANT=starter-epel TARGET=centos7
-  - VARIANT=starter-systemd TARGET=centos7
+  - VARIANT=starter-systemd TARGET=centos7 OCP_VERSION=v1.5.1
   - VARIANT=starter-nsswrapper TARGET=centos7
   - VARIANT=starter-api TARGET=centos7
   - VARIANT=starter-scratch TARGET=centos7
@@ -24,7 +23,6 @@ install:
   - if [ ${BUILD} ]; then make lint -C ${VARIANT}; fi
 
 before_script:
-  - if [ ${BUILD} ]; then mkdir $HOME/bin; fi
   - if [ ${BUILD} ]; then export PATH=$PATH:$HOME/bin; fi
   - if [ ${BUILD} ]; then tmp=`mktemp`; fi
   - if [ ${BUILD} ]; then echo '{"insecure-registries":["172.30.0.0/16"]}' > ${tmp}; fi
@@ -37,7 +35,7 @@ script:
   - if [ ${BUILD} ]; then make test -C ${VARIANT} TARGET=${TARGET}; fi
   - if [ ${BUILD} ]; then wget `curl -s https://api.github.com/repos/openshift/origin/releases/latest | jq -r ".assets[] | select(.name | test(\"linux-64bit\")) | .browser_download_url" | grep -i client-tools`; fi
   - if [ ${BUILD} ]; then tar xvfz `ls openshift-origin-client-tools-*.tar.gz` --strip-components=1 -C $HOME/bin; fi
-  - if [ ${BUILD} ]; then oc cluster up; fi
+  - if [ ${BUILD} ]; then if [ ${OCP_VERSION} ]; then oc cluster up --version=${OCP_VERSION}; else oc cluster up; fi; fi
   - if [ ${BUILD} ]; then export OC_USER=`oc whoami` OC_PASS=`oc whoami -t`; fi
   - if [ ${BUILD} ]; then oc login -u system:admin; fi
   - if [ ${BUILD} ]; then oc rollout status -w dc/docker-registry -n default || oc rollout retry dc/docker-registry -n default && oc rollout status -w dc/docker-registry -n default; fi
