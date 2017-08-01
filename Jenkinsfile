@@ -8,7 +8,11 @@ node {
     def source = ""
     def dockerfiles = null
     String scmUrl = scm.browser.url
-    String scmRef = "${CHANGE_BRANCH}"
+    String scmRef = "master"
+
+    if(env.CHANGE_BRANCH) {
+        scmRef = "${env.CHANGE_BRANCH}"
+    }
 
     /* Checkout source and find all the Dockerfiles.
      * This will not include Dockerfiles with extensions. Currently the issue
