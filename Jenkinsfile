@@ -40,7 +40,7 @@ node {
             String normalizeRef = scmRef.replace('_', '-').toLowerCase()
             String normalizePath = path.replace('/','').replace('_','-').toLowerCase()
 
-            String buildName = "${normalizePath}.${normalizeRef}"
+            String buildName = "${normalizePath}-${normalizeRef}"
 
             newBuild = newBuildOpenShift() {
                 name = buildName
