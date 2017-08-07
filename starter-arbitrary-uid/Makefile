@@ -27,7 +27,7 @@ test:
 	$(eval ARB_UID=$(shell shuf -i 1000010000-1000020000 -n 1))
 #	OpenShift compatibility - prepare for mount of specified VOLUMEs in image
 	$(eval VOL_LIST=$(shell docker inspect -f '{{range $$p, $$vol := .Config.Volumes}} {{json $$p}} {{end}}' ${CONTEXT}/${IMAGE_NAME}:${TARGET}-${VERSION}))
-	$(eval TMPFS=$(shell for i in ${VOL_LIST}; do VOLS="$${VOLS} --tmpfs $${i}:rw,suid,dev,exec,relatime,mode=2770,gid=${ARB_UID}"; done; echo $${VOLS}))
+	$(eval TMPFS=$(shell for i in ${VOL_LIST}; do VOLS="$${VOLS} --tmpfs $${i}:rw,suid,dev,exec,relatime,mode=2777,gid=${ARB_UID}"; done; echo $${VOLS}))
 	$(eval CONTAINERID=$(shell docker run -tdi \
 	-u ${ARB_UID} --group-add ${ARB_UID} \
 	${TMPFS} \
@@ -43,10 +43,11 @@ test:
 	@echo ""
 	@echo "Check id information..."
 	docker exec ${CONTAINERID} id
+	@echo ""
 	docker exec ${CONTAINERID} whoami
 	@echo ""
 	@echo "Check volume(s)..."
-	@for i in ${VOL_LIST}; do docker exec ${CONTAINERID} mountpoint $${i}; docker exec ${CONTAINERID} mount | grep -w $${i} | grep tmpfs; echo; done
+	@for i in ${VOL_LIST}; do docker exec ${CONTAINERID} mountpoint $${i}; docker exec ${CONTAINERID} ls -ld $${i}; docker exec ${CONTAINERID} mount | grep -w $${i} | grep tmpfs; echo; done
 	@docker rm -vf ${CONTAINERID}
 
 openshift-test:
