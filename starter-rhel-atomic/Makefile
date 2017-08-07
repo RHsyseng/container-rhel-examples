@@ -19,7 +19,14 @@ lint:
 	dockerfile_lint -f Dockerfile
 
 test:
-	$(eval CONTAINERID=$(shell docker run -tdi -u $(shell shuf -i 1000010000-1000020000 -n 1) \
+#	OpenShift compatibility - assign an arbitrary uid
+	$(eval ARB_UID=$(shell shuf -i 1000010000-1000020000 -n 1))
+#	OpenShift compatibility - prepare for mount of specified VOLUMEs in image
+	$(eval VOL_LIST=$(shell docker inspect -f '{{range $$p, $$vol := .Config.Volumes}} {{json $$p}} {{end}}' ${CONTEXT}/${IMAGE_NAME}:${TARGET}-${VERSION}))
+	$(eval TMPFS=$(shell for i in ${VOL_LIST}; do VOLS="$${VOLS} --tmpfs $${i}:rw,suid,dev,exec,relatime,mode=2770,gid=${ARB_UID}"; done; echo $${VOLS}))
+	$(eval CONTAINERID=$(shell docker run -tdi \
+	-u ${ARB_UID} --group-add ${ARB_UID} \
+	${TMPFS} \
 	--cap-drop=KILL \
 	--cap-drop=MKNOD \
 	--cap-drop=SYS_CHROOT \
@@ -27,11 +34,17 @@ test:
 	--cap-drop=SETGID \
 	${CONTEXT}/${IMAGE_NAME}:${TARGET}-${VERSION}))
 	@sleep 3
-	@docker exec ${CONTAINERID} env
-	@docker rm -f ${CONTAINERID}
+	docker exec ${CONTAINERID} env
+	@echo ""
+	@docker rm -vf ${CONTAINERID}
 
 run:
-	docker run -tdi -u $(shell shuf -i 1000010000-1000020000 -n 1) \
+	$(eval ARB_UID=$(shell shuf -i 1000010000-1000020000 -n 1))
+	$(eval VOL_LIST=$(shell docker inspect -f '{{range $$p, $$vol := .Config.Volumes}} {{json $$p}} {{end}}' ${CONTEXT}/${IMAGE_NAME}:${TARGET}-${VERSION}))
+	$(eval TMPFS=$(shell for i in ${VOL_LIST}; do VOLS="$${VOLS} --tmpfs $${i}:rw,suid,dev,exec,relatime,mode=2770,gid=${ARB_UID}"; done; echo $${VOLS}))
+	docker run -tdi \
+	-u ${ARB_UID} --group-add ${ARB_UID} \
+	${TMPFS} \
 	--cap-drop=KILL \
 	--cap-drop=MKNOD \
 	--cap-drop=SYS_CHROOT \
