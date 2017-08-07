@@ -49,13 +49,13 @@ ENV APP_HOME=${APP_ROOT}/src  PATH=$PATH:${APP_ROOT}/bin
 
 RUN mkdir -p ${APP_HOME}
 COPY bin/ ${APP_ROOT}/bin/
-RUN chown -R ${USER_UID}:0 ${APP_ROOT} && \
-    chmod -R g+rw ${APP_ROOT} && \
-    chmod -R ug+x ${APP_ROOT}/bin && \
-    find ${APP_ROOT} -type d -exec chmod g+x {} +
+RUN chmod -R u+x ${APP_ROOT}/bin && \
+    chown -R ${USER_UID}:0 ${APP_ROOT} && \
+    chmod -R g=u ${APP_ROOT}
 
 ####### Add app-specific needs below. #######
 ### Containers should NOT run as root as a good practice
 USER 99
 WORKDIR ${APP_ROOT}
+VOLUME ${APP_ROOT}/logs ${APP_ROOT}/data
 CMD run
