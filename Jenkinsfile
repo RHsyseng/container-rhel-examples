@@ -11,13 +11,32 @@ node {
     String scmUrl = scm.browser.url
     String scmRef = "master"
     String buildName = ""
+    def gitHubUtils = new com.redhat.GitHubUtils()
 
-
+    echo sh(returnStdout: true, script: 'env')
+    
     if(env.CHANGE_BRANCH) {
         scmRef = "${env.CHANGE_BRANCH}"
     }
-    else if(env.BRANCH_NAME) {
+    else if(!(env.BRANCH_NAME.contains("PR"))) {
         scmRef = "${env.BRANCH_NAME}"
+    }
+       /* if CHANGE_URL is defined then this is a pull request
+     * additional steps are required to determine the git url
+     * and branch name to pass to new-build.
+     * Otherwise just use the scm.browser.url and scm.branches[0]
+     * for new-build.
+     */
+    else if (env.CHANGE_URL) {
+        def pull = null
+        stage('Github Url and Ref') {
+            // Query the github repo api to return the clone_url and the ref (branch name)
+            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: "github", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+                pull = gitHubUtils.getGitHubPR(env.USERNAME, env.PASSWORD, env.CHANGE_URL)
+                scmUrl = pull.url
+                scmRef = pull.ref
+            }
+        }
     }
 
     /* Checkout source and find all the Dockerfiles.
