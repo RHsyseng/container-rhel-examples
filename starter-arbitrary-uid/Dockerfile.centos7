@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 FROM centos:centos7
-=======
-FROM centos:centos7
->>>>>>> c7c75b8e6be6b2337e67306060de7d9b227f6d15
 MAINTAINER Red Hat Systems Engineering <refarch-feedback@redhat.com>
 
 ### Atomic/OpenShift Labels - https://github.com/projectatomic/ContainerApplicationGenericLabels
