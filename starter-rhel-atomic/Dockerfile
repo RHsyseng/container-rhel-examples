@@ -3,6 +3,7 @@ MAINTAINER Red Hat Systems Engineering <refarch-feedback@redhat.com>
 
 ### Atomic/OpenShift Labels - https://github.com/projectatomic/ContainerApplicationGenericLabels
 LABEL name="acme/starter-rhel-atomic" \
+      maintainer="refarch-feedback@redhat.com" \
       vendor="Acme Corp" \
       version="3.2" \
       release="1" \
@@ -24,14 +25,13 @@ COPY help.1 /
 COPY licenses /licenses
 
 ### Setup user for build execution and application runtime
-ENV APP_ROOT=/opt/app-root \
-    USER_NAME=nobody \
-    USER_UID=99
-ENV APP_HOME=${APP_ROOT}/src  PATH=$PATH:${APP_ROOT}/bin
+ENV APP_ROOT=/opt/app-root
+ENV APP_HOME=${APP_ROOT}/src PATH=$PATH:${APP_ROOT}/bin
 
+#ENV USER_NAME=default \
+#    USER_UID=10001
 ### Add your package needs here
-#RUN INSTALL_PKGS="golang-github-cpuguy83-go-md2man \
-#      shadow-utils \
+#RUN INSTALL_PKGS="shadow-utils \
 #      libsemanage \
 #      ustr \
 #      audit-libs \
@@ -39,12 +39,9 @@ ENV APP_HOME=${APP_ROOT}/src  PATH=$PATH:${APP_ROOT}/bin
 ### Add necessary Red Hat repos here
 #    microdnf --enablerepo=rhel-7-server-rpms --enablerepo=rhel-7-server-optional-rpms \
 #      install --nodocs ${INSTALL_PKGS} && \
-### help file markdown to man conversion
-#    go-md2man -in /tmp/help.md -out /help.1 && \
 #    useradd -l -u ${USER_UID} -r -g 0 -d ${APP_ROOT} -s /sbin/nologin \
 #      -c "${USER_NAME} application user" ${USER_NAME} && \
-#    microdnf remove golang-github-cpuguy83-go-md2man shadow-utils \
-#      libsemanage ustr audit-libs libcap-ng && \
+#    microdnf remove ${INSTALL_PKGS} && \
 #    microdnf clean all
 
 RUN mkdir -p ${APP_HOME}
@@ -56,6 +53,7 @@ RUN chmod -R u+x ${APP_ROOT}/bin && \
 ####### Add app-specific needs below. #######
 ### Containers should NOT run as root as a good practice
 USER 99
+#USER 10001
 WORKDIR ${APP_ROOT}
 VOLUME ${APP_ROOT}/logs ${APP_ROOT}/data
 CMD run

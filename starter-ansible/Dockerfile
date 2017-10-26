@@ -14,6 +14,7 @@ MAINTAINER Red Hat Systems Engineering <refarch-feedback@redhat.com>
 # ----------------------------------------------
 
 LABEL name="acme/starter-ansible" \
+      maintainer="refarch-feedback@redhat.com" \
       vendor="Acme Corp" \
       version="3.2" \
       release="1" \
@@ -59,7 +60,7 @@ COPY bin/ ${APP_ROOT}/bin/
 # -----------------------------------------------
 
 RUN yum -y install --disablerepo "*" \
-                   --enablerepo rhel-7-server-rpms,rhel-7-server-optional-rpms,rhel-7-server-ose-3.5-rpms \
+                   --enablerepo rhel-7-server-rpms,rhel-7-server-optional-rpms,rhel-7-server-ose-3.6-rpms \
                    --setopt=tsflags=nodocs ansible && \
     ansible-playbook /tmp/init.yml -c local -i localhost, \
                    --extra-vars "application_install=${APPLICATION_INSTALL} application_version=${APPLICATION_VERSION} app_root=${APP_ROOT} username=${USER_NAME} uid=${USER_UID}" && \
