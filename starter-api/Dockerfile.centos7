@@ -3,6 +3,7 @@ MAINTAINER Red Hat Systems Engineering <refarch-feedback@redhat.com>
 
 ### Atomic/OpenShift Labels - https://github.com/projectatomic/ContainerApplicationGenericLabels
 LABEL name="acme/starter-api" \
+      maintainer="refarch-feedback@redhat.com" \
       vendor="Acme Corp" \
       version="3.2" \
       release="1" \
