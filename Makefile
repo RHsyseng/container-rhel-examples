@@ -6,8 +6,7 @@ starter-epel \
 starter-systemd \
 starter-nsswrapper \
 starter-api \
-starter-scratch \
-starter-ansible
+starter-scratch
 
 # Allow user to pass in OS build options
 ifeq ($(TARGET),centos7)
