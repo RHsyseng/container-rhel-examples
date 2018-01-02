@@ -5,7 +5,7 @@ MAINTAINER Red Hat Systems Engineering <refarch-feedback@redhat.com>
 LABEL name="acme/starter-nsswrapper" \
       maintainer="refarch-feedback@redhat.com" \
       vendor="Acme Corp" \
-      version="3.2" \
+      version="3.7" \
       release="1" \
       summary="Acme Corp's Starter app" \
       description="Starter app will do ....." \
@@ -27,13 +27,16 @@ COPY help.md /tmp/
 COPY licenses /licenses
 
 ### Add necessary Red Hat repos here
-RUN REPOLIST=rhel-7-server-rpms,rhel-7-server-optional-rpms,rhel-7-server-ose-3.5-rpms \
+RUN REPOLIST=rhel-7-server-rpms,rhel-7-server-optional-rpms,epel \
 ### Add your package needs here
     INSTALL_PKGS="golang-github-cpuguy83-go-md2man \
       nss_wrapper \
       gettext" && \
     yum -y update-minimal --disablerepo "*" --enablerepo rhel-7-server-rpms --setopt=tsflags=nodocs \
       --security --sec-severity=Important --sec-severity=Critical && \
+    curl -o epel-release-latest-7.noarch.rpm -SL https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm \
+      --retry 5 --retry-max-time 0 -C - && \
+    yum -y localinstall epel-release-latest-7.noarch.rpm && rm epel-release-latest-7.noarch.rpm && \
     yum -y install --disablerepo "*" --enablerepo ${REPOLIST} --setopt=tsflags=nodocs ${INSTALL_PKGS} && \
 ### help file markdown to man conversion
     go-md2man -in /tmp/help.md -out /help.1 && \

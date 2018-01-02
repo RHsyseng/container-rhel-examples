@@ -1,9 +1,9 @@
 CONTEXT = acme
-VERSION = v3.2
+VERSION = v3.7
 IMAGE_NAME = starter
 REGISTRY = docker-registry.default.svc.cluster.local:5000
-OC_USER=developer
-OC_PASS=developer
+OC_USER = developer
+OC_PASS = developer
 
 # Allow user to pass in OS build options
 ifeq ($(TARGET),centos7)

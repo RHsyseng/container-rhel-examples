@@ -37,7 +37,7 @@
         name: "{{ item }}"
         state: present
         disablerepo: "*"
-        enablerepo: "rhel-7-server-rpms,rhel-7-server-optional-rpms,epel,rhel-7-server-extras-rpms,rhel-7-server-aus-rpms" 
+        enablerepo: "rhel-7-server-rpms,rhel-7-server-optional-rpms,epel,rhel-7-server-extras-rpms" 
       with_items:
         - gcc
         - make
