@@ -2,16 +2,20 @@ sudo: required
 dist: trusty
 
 env:
-  - VARIANT=starter TARGET=centos7
-  - VARIANT=starter-arbitrary-uid TARGET=centos7
-  - VARIANT=starter-epel TARGET=centos7
-  - VARIANT=starter-systemd TARGET=centos7
-  - VARIANT=starter-nsswrapper TARGET=centos7
-  - VARIANT=starter-api TARGET=centos7
-  - VARIANT=starter-scratch TARGET=centos7
+  global:
+    - OCP_VERSION=v3.6.1
+    - TARGET=centos7
+  matrix:
+    - VARIANT=starter
+    - VARIANT=starter-arbitrary-uid
+    - VARIANT=starter-epel
+    - VARIANT=starter-systemd
+    - VARIANT=starter-nsswrapper
+    - VARIANT=starter-api
+    - VARIANT=starter-scratch
 
 services:
- - docker
+  - docker
 
 before_install:
   - export BUILD=`git diff --name-only HEAD~1 | awk -F '/' '{print $1}' | uniq | grep -w ^${VARIANT}$`

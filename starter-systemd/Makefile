@@ -35,12 +35,14 @@ test:
 	--cap-drop=MKNOD \
 	--cap-drop=SYS_CHROOT \
 	${CONTEXT}/${IMAGE_NAME}:${TARGET}-${VERSION}))
-	@sleep 3
+	@sleep 15
 	@echo ""
 	@echo "Check httpd..."
 	@docker exec ${CONTAINERID} curl localhost
 	@echo ""
 	@echo "Check systemd state..."
+	@docker exec ${CONTAINERID} systemctl
+	@docker exec ${CONTAINERID} journalctl -ax
 	@docker exec ${CONTAINERID} systemctl status
 	@echo ""
 	@echo "Check volume(s)..."
