@@ -1,6 +1,6 @@
 GO_BUILD = github.com/golang/example/outyet
 CONTEXT = acme
-VERSION = v3.2
+VERSION = v3.7
 IMAGE_NAME = starter-scratch
 REGISTRY = docker-registry.default.svc.cluster.local:5000
 OC_USER=developer

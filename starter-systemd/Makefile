@@ -1,5 +1,5 @@
 CONTEXT = acme
-VERSION = v3.2
+VERSION = v3.7
 IMAGE_NAME = starter-systemd
 REGISTRY = docker-registry.default.svc.cluster.local:5000
 OC_USER=developer

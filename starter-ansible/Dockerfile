@@ -1,7 +1,7 @@
 # -----------------------------------------------
 # Build 
 # -----------------------------------------------
-# docker build --pull -t acme/starter-ansible -t acme/starter-ansible:v3.2 .
+# docker build --pull -t acme/starter-ansible -t acme/starter-ansible:v3.7 .
 # ----------------------------------------------
 FROM registry.access.redhat.com/rhel7
 MAINTAINER Red Hat Systems Engineering <refarch-feedback@redhat.com>
@@ -16,7 +16,7 @@ MAINTAINER Red Hat Systems Engineering <refarch-feedback@redhat.com>
 LABEL name="acme/starter-ansible" \
       maintainer="refarch-feedback@redhat.com" \
       vendor="Acme Corp" \
-      version="3.2" \
+      version="3.7" \
       release="1" \
       summary="Acme Corp's starter-ansible app" \
       description="starter-ansible app will do ....." \
@@ -60,7 +60,7 @@ COPY bin/ ${APP_ROOT}/bin/
 # -----------------------------------------------
 
 RUN yum -y install --disablerepo "*" \
-                   --enablerepo rhel-7-server-rpms,rhel-7-server-optional-rpms,rhel-7-server-ose-3.6-rpms \
+                   --enablerepo rhel-7-server-rpms,rhel-7-server-optional-rpms,rhel-7-server-ose-3.7-rpms \
                    --setopt=tsflags=nodocs ansible && \
     ansible-playbook /tmp/init.yml -c local -i localhost, \
                    --extra-vars "application_install=${APPLICATION_INSTALL} application_version=${APPLICATION_VERSION} app_root=${APP_ROOT} username=${USER_NAME} uid=${USER_UID}" && \

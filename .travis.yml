@@ -5,7 +5,7 @@ env:
   - VARIANT=starter TARGET=centos7
   - VARIANT=starter-arbitrary-uid TARGET=centos7
   - VARIANT=starter-epel TARGET=centos7
-  - VARIANT=starter-systemd TARGET=centos7 OCP_VERSION=v1.5.1
+  - VARIANT=starter-systemd TARGET=centos7
   - VARIANT=starter-nsswrapper TARGET=centos7
   - VARIANT=starter-api TARGET=centos7
   - VARIANT=starter-scratch TARGET=centos7

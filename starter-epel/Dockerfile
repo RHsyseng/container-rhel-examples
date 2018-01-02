@@ -5,7 +5,7 @@ MAINTAINER Red Hat Systems Engineering <refarch-feedback@redhat.com>
 LABEL name="acme/starter-epel" \
       maintainer="refarch-feedback@redhat.com" \
       vendor="Acme Corp" \
-      version="3.2" \
+      version="3.7" \
       release="1" \
       summary="Acme Corp's starter-epel app" \
       description="starter-epel app will do ....." \

@@ -1,5 +1,5 @@
 CONTEXT = acme
-VERSION = v3.2
+VERSION = v3.7
 IMAGE_NAME = starter-ansible
 
 # Allow user to pass in OS build options
