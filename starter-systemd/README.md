@@ -43,29 +43,26 @@ $ docker exec starter-systemd journalctl
 ```
 ### Running in OpenShift w/ the anyuid scc & root uid
 ```shell
-$ oc new-project <project>
-
 $ oc adm policy add-scc-to-user anyuid -z default
-$ oc create -f systemd-ocp-template.yaml
+$ oc new-app registry.centos.org/container-examples/starter-systemd
 
-# deploy rhel7 image
-$ oc new-app --template=systemd-httpd
-
-# OR deploy centos7 image
-# oc new-app --template=systemd-httpd -p DOCKERFILE=Dockerfile.centos7
+# OR deploy rhel7 image
+$ oc new-build --name=starter-systemd --context-dir=starter-systemd . -D - < Dockerfile
+$ oc logs -f bc/starter-systemd
+$ oc new-app starter-systemd
 ```
-### Running in OpenShift w/ a restrictive scc & arbitrary uid
+### Running in OpenShift w/ a _restrictive_ scc & arbitrary uid
 ```shell
-$ oc new-project <project>
+$ oc create -f systemd-restricted.yaml
+$ oc adm policy add-scc-to-user systemd-restricted -z default
+$ oc new-app registry.centos.org/container-examples/starter-systemd:arbuid
 
-$ oc create -f systemd-ocp-template-arbuid.yaml
-
-# deploy rhel7 image
-$ oc new-app --template=systemd-httpd -p NAMESPACE=$(oc project -q)
-# OR deploy centos7 image
-# oc new-app --template=systemd-httpd -p NAMESPACE=$(oc project -q) -p DOCKERFILE=Dockerfile.arbuid.centos7
+# OR deploy rhel7 image
+$ oc new-build --name=starter-systemd --context-dir=starter-systemd . -D - < Dockerfile.arbuid
+$ oc logs -f bc/starter-systemd
+$ oc new-app starter-systemd
 ```
-### Systemd service unit file considerations w/ a __restrictive__ scc deployment
+### Systemd service unit file considerations w/ a _restrictive_ scc deployment
 
 If you plan to use systemd unit files that actually call a shell as a ExecStart, the invoked shell environment needs to be relaxed in order to prevent your EUID from being reset to RUID by bash/sh.
 This applies to the calling and execution shell on script, the "-p" flag is used to accomplish this in the example unit below :  

@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: SecurityContextConstraints
+fsGroup:
+  type: MustRunAs
+metadata:
+  annotations:
+    kubernetes.io/description: systemd restricted denies access to all host features and requires
+      pods to be run with a UID, and SELinux context that are allocated to the namespace.
+  name: systemd-restricted
+priority: 9
+requiredDropCapabilities:
+- KILL
+- MKNOD
+runAsUser:
+  type: MustRunAsRange
+seLinuxContext:
+  type: MustRunAs
+supplementalGroups:
+  type: RunAsAny
+volumes:
+- configMap
+- downwardAPI
+- emptyDir
+- persistentVolumeClaim
+- projected
+- secret
