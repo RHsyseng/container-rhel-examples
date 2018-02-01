@@ -3,7 +3,7 @@ dist: trusty
 
 env:
   global:
-    - OCP_VERSION=v3.6.1
+#    - OCP_VERSION=v3.6.1
     - TARGET=centos7
   matrix:
     - VARIANT=starter
